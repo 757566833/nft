@@ -4,7 +4,6 @@ export * from './copy';
 export * from './count-down';
 export * from './dropdown';
 export * from './ellipsis';
-export * from './highlight';
 export * from './iconfont';
 export * from './icons';
 export * from './internal-icon';

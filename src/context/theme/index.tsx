@@ -135,9 +135,20 @@ const ThemeProvider:React.FC<PropsWithChildren<unknown>> = (props)=>{
                           root:{
                               background:mode=="dark"?"#212121":"#fff"
                           }
+                      },
+                  },
+                  MuiButton:{
+                      defaultProps:{
+                          disableRipple:true,
+                          disableFocusRipple:true,
+                          disableElevation:true
                       }
-                  }
-
+                  },
+                    MuiTypography:{
+                      defaultProps:{
+                          color:(theme)=>theme.palette.text.primary
+                      }
+                    }
                 }
             }),
         [mode],

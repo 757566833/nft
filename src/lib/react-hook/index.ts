@@ -14,7 +14,6 @@ export * from './usePrevious';
 export * from './useRaf';
 export * from './useRafLoop';
 export * from './useRafState';
-export * from './useSpring';
 export * from './useSubscribe';
 export * from './useTimeoutFn';
 export * from './useUnmount';

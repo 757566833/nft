@@ -10,13 +10,14 @@ import React, {PropsWithChildren, useCallback, useMemo} from "react";
 import '@/styles/global.css'
 import "nprogress/nprogress.css"
 import NProgress from "nprogress";
+import DynamicRender from '../context'
 import dynamic from "next/dynamic";
 import {GlobalStyles} from "@/lib/style";
 
 const clientSideEmotionCache = createEmotionCache();
-const DynamicRender = dynamic<any>(() => import('../context'), {
-    ssr: false,
-})
+// const DynamicRender = dynamic<any>(() => import('../context'), {
+//     ssr: false,
+// })
 
 interface Props extends AppProps<any> {
     emotionCache: EmotionCache
