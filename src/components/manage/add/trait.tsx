@@ -1,4 +1,4 @@
-import React, {useCallback} from "react";
+import React, {useCallback, useRef} from "react";
 import {Modal} from "@/lib/react-component";
 import {Stack, TextField} from "@mui/material";
 import {useTrait} from "@/components/manage/context/trait";
@@ -25,6 +25,7 @@ const AddTrait:React.FC = ()=>{
     const handleAdd = useCallback((data:add)=>{
         console.log(data)
     },[])
+    const cropRef = useRef<{ getBlob: () => Promise<Blob | undefined> | undefined; }>(null)
     return  <Modal title={`add ${addAttribute} trait`} keepMounted={true} open={addVisible} onCancel={handleCloseAdd} onOk={handleSubmit(handleAdd)}>
         <Stack width={280} padding={1} spacing={2}>
             <TextField fullWidth={true} label={'name'} {...register("name")}/>
@@ -40,7 +41,7 @@ const AddTrait:React.FC = ()=>{
                     />
                 )}
             />
-            <ImgCrop file={file} aspect={1}/>
+            <ImgCrop ref={cropRef} file={file} aspect={600/600}/>
         </Stack>
 
     </Modal>
