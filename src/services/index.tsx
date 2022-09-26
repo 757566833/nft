@@ -46,3 +46,20 @@ export const addAttribute = async (params:IAddAttributeRequest)=>{
     return json;
 }
 
+
+// export const getTraits = async (attributeId:string)=>{
+//     const url = `${server}/attributes/list`
+//     const res =  await fetch(url)
+//     if( res.status>=300){
+//         message.error('请求错误')
+//         return
+//     }
+//     const json = await res.json() as IResponse<IAttribute[]>
+//     if(json.code>=300){
+//         message.error(json.msg)
+//         return
+//     }
+//     return json.data;
+// }
+
+

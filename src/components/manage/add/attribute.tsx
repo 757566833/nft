@@ -1,9 +1,7 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {Box, Button, Input, Stack, TextField} from "@mui/material";
+import {Button, Stack, TextField} from "@mui/material";
 import {Modal} from "@/lib/react-component";
 import { useForm } from "react-hook-form";
-import useSWR, {useSWRConfig} from "swr";
-import {fetcher} from "@/services";
 import {useAddAttribute} from "@/http";
 interface add{
     name:string,
@@ -13,7 +11,7 @@ const defaultParam:add = {
     name:'',
     zIndex:1
 }
-const Add:React.FC = ()=>{
+const AddAttribute:React.FC = ()=>{
     const [addAttribute] = useAddAttribute()
     const { register, handleSubmit, watch, formState: { errors },reset } = useForm<add>({defaultValues:defaultParam});
 
@@ -25,8 +23,8 @@ const Add:React.FC = ()=>{
         setAddVisible(false)
     },[])
     const handleAdd = useCallback(async (data:add)=>{
-       const res = await addAttribute(data)
-       console.log(res)
+        const res = await addAttribute(data)
+        console.log(res)
     },[addAttribute])
     useEffect(()=>{
         if(!addVisible){
@@ -47,4 +45,4 @@ const Add:React.FC = ()=>{
         </Button>
     </>
 }
-export default Add;
+export default AddAttribute;
