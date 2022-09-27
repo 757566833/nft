@@ -9,7 +9,7 @@ import React, {
     useState
 } from 'react';
 import ReactCrop, {Crop, centerCrop, makeAspectCrop} from 'react-image-crop';
-import {PercentCrop, PixelCrop} from "react-image-crop/src/types";
+import {PixelCrop} from "react-image-crop/src/types";
 import 'react-image-crop/dist/ReactCrop.css'
 import {asyncCanvas2Blob} from "@/lib/util";
 
@@ -88,15 +88,15 @@ const ImgCrop:  ForwardRefRenderFunction<{ getBlob:()=>Promise<Blob|undefined>|u
     const {file, aspect} = props;
     const imageRef = useRef<HTMLImageElement | null>(null);
     const [imgSrc, setImgSrc] = useState('')
-    const [crop, setCrop] = useState<Crop>({
+    const [crop, setCrop] = useState<PixelCrop>({
         unit: 'px', // Can be 'px' or '%'
         x: 0,
         y: 0,
         width: 600,
         height: 600
     })
-    const handleChange = useCallback((_crop: PixelCrop, percentageCrop: PercentCrop) => {
-        setCrop(percentageCrop)
+    const handleChange = useCallback((_crop: PixelCrop) => {
+        setCrop(_crop)
     }, [])
     const onImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
         if (aspect) {

@@ -7,6 +7,7 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {IAttribute} from "@/services";
 import {useTrait} from "@/components/manage/context/trait";
+import Traits from "@/components/manage/traits";
 
 
 
@@ -53,9 +54,10 @@ export const Attributes:React.FC<{list?:IAttribute[],loading?:boolean}> = (props
                 </Menu>}>
                     <MoreHorizIcon/>
                 </Dropdown>
+                <Typography variant={"body1"} color={'#5e727f'}>{item.count} traits</Typography>
             </Stack>
             <Box>
-                list
+                <Traits attributeId={item.id} total={item.count}/>
             </Box>
         </Box>
     },[handleAdd])
