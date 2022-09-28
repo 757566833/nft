@@ -15,7 +15,7 @@ const defaultParam:add = {
     url:undefined
 }
 const AddTrait:React.FC = ()=>{
-    const { register, control,handleSubmit, watch, formState: { errors },reset } = useForm<add>({defaultValues:defaultParam});
+    const { register, control,handleSubmit, watch, formState: { errors },setValue } = useForm<add>({defaultValues:defaultParam});
     const file = watch("url")
     const cropRef = useRef<{ getBlob: () => Promise<Blob | undefined> | undefined; }>(null)
     const [traitState,setTraitState ] = useTrait();
@@ -54,11 +54,18 @@ const AddTrait:React.FC = ()=>{
             <Controller
                 name="url"
                 control={control}
-                render={({ field }) => (
+                render={({ field ,fieldState}) => (
                     <input
                         type="file"
                         onChange={e => {
-                            field.onChange(e.target.files?.[e.target.files?.length-1]);
+                            const files = e.target.files
+                            const file = files?.[files?.length-1]
+                            if(file){
+                                field.onChange(file);
+                                const [name] = file.name.split('.')
+                                setValue("name",name)
+                            }
+
                         }}
                     />
                 )}

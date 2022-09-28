@@ -15,7 +15,7 @@ const Manage: React.FC = () => {
                 <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} padding={2}>
                     <Typography fontWeight={"bold"} variant={'h3'}>Attributes</Typography>
                     <Stack direction={"row"} spacing={1} height={40}>
-                        <AddAttribute/>
+                        <AddAttribute onFinish={mutate}/>
                         <Button variant={"outlined"}>
                             upload assets
                         </Button>

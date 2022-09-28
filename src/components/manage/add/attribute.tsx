@@ -11,7 +11,8 @@ const defaultParam:add = {
     name:'',
     zIndex:1
 }
-const AddAttribute:React.FC = ()=>{
+const AddAttribute:React.FC<{onFinish:()=>void}> = (props)=>{
+    const {onFinish} = props
     const [addAttribute] = useAddAttribute()
     const { register, handleSubmit, watch, formState: { errors },reset } = useForm<add>({defaultValues:defaultParam});
 
@@ -24,8 +25,10 @@ const AddAttribute:React.FC = ()=>{
     },[])
     const handleAdd = useCallback(async (data:add)=>{
         const res = await addAttribute(data)
-        console.log(res)
-    },[addAttribute])
+        if(res){
+            onFinish()
+        }
+    },[addAttribute, onFinish])
     useEffect(()=>{
         if(!addVisible){
             reset()
