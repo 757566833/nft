@@ -5,7 +5,7 @@ import {useTrait} from "@/components/manage/context/trait";
 import {useForm,Controller} from "react-hook-form";
 import ImgCrop from "@/lib/react-component/img-crop";
 import {upload} from "@/services/upload";
-import {addTrait} from "@/services";
+import {useAddTrait} from "@/http/trait";
 interface add{
     name:string,
     url?:File
@@ -17,9 +17,12 @@ const defaultParam:add = {
 const AddTrait:React.FC = ()=>{
     const { register, control,handleSubmit, watch, formState: { errors },setValue } = useForm<add>({defaultValues:defaultParam});
     const file = watch("url")
-    const cropRef = useRef<{ getBlob: () => Promise<Blob | undefined> | undefined; }>(null)
     const [traitState,setTraitState ] = useTrait();
     const {addVisible,addAttributeId,addAttribute} = traitState
+    const [addTrait] = useAddTrait(addAttributeId)
+    const cropRef = useRef<{ getBlob: () => Promise<Blob | undefined> | undefined; }>(null)
+
+
     const handleCloseAdd = useCallback(()=>{
         setTraitState({
             addVisible:false
@@ -46,7 +49,7 @@ const AddTrait:React.FC = ()=>{
             }
 
         }
-    },[addAttributeId, setTraitState])
+    },[addAttributeId, addTrait, setTraitState])
 
     return  <Modal title={`add ${addAttribute} trait`} keepMounted={true} open={addVisible} onCancel={handleCloseAdd} onOk={handleSubmit(handleAdd)}>
         <Stack width={280} padding={1} spacing={2}>

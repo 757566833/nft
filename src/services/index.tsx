@@ -20,6 +20,21 @@ export interface IResponse<T> {
     msg:string
 }
 
+export const getAttribute = async (id:number)=>{
+    const url = `${server}/attribute/${id}`
+    const res =  await fetch(url)
+    if( res.status>=300){
+        message.error('请求错误')
+        return
+    }
+    const json = await res.json() as IResponse<Omit<IAttribute, 'count'>>
+    if(json.code>=300){
+        message.error(json.msg)
+        return
+    }
+    return json.data;
+}
+
 export const getAttributes = async ()=>{
     const url = `${server}/attributes/list`
     const res =  await fetch(url)
@@ -34,11 +49,13 @@ export const getAttributes = async ()=>{
     }
     return json.data;
 }
-export interface IAddAttributeRequest{
-    name:string,zIndex:number
+export interface IAttributeRequest{
+    id:number
+    name:string,
+    zIndex:number
 }
 
-export const addAttribute = async (params:IAddAttributeRequest)=>{
+export const addAttribute = async (params:Omit<IAttributeRequest, 'id'>)=>{
     const url = `${server}/attribute`
     const res =  await fetch(url,{
         method:'POST',
@@ -53,7 +70,20 @@ export const addAttribute = async (params:IAddAttributeRequest)=>{
     return json;
 }
 
+export const editAttribute = async (params:IAttributeRequest)=>{
+    const url = `${server}/attribute/${params.id}`
+    const res =  await fetch(url,{
+        method:'PUT',
+        body:JSON.stringify(params)
+    })
+    if( res.status>=300){
+        message.error('请求错误')
+        return
+    }
 
+    const json = await res.json()
+    return json;
+}
 export const getTraits = async (attributeId:number)=>{
     const url = `${server}/traits/list/${attributeId}`
     const res =  await fetch(url)

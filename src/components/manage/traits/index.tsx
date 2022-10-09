@@ -2,32 +2,18 @@ import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {Box, Slider, Stack, Typography, Skeleton} from "@mui/material";
 import {getTraits, ITrait} from "@/services";
 import {auto} from "@popperjs/core";
+import {useTraits} from "@/http/trait";
 
 const map: Record<number, string> = {
-    0: 'Super Rare',
-    25: 'Common',
-    50: 'Often',
-    75: 'Very Often',
+    0: 'Zero',
+    25: 'Super Rare',
+    50: 'Common',
+    75: 'Often',
     100: 'Very Often'
 }
 export const Traits: React.FC<{ attributeId: number, total: number }> = (props) => {
     const {attributeId, total} = props;
-    const [list, setList] = useState<ITrait[]>([])
-    const [loading, setLoading] = useState(true);
-    const getList = useCallback(async (attributeId: number) => {
-        setLoading(true)
-        const res = await getTraits(attributeId)
-        setLoading(false)
-        if (res) {
-            setList(res)
-        }
-
-    }, [])
-    useEffect(() => {
-        if(attributeId){
-            getList(attributeId)
-        }
-    }, [attributeId, getList])
+    const {data, error, isValidating, mutate} =  useTraits(attributeId)
     const s = useMemo(() => {
         const array = new Array(total).fill('')
         return array.map((_, index) => <Box key={index} border={'1px solid #dde3e7'} borderRadius={5} width={208}
@@ -55,7 +41,7 @@ export const Traits: React.FC<{ attributeId: number, total: number }> = (props) 
         </Box>)
     }, [total])
     const s2 = useMemo(() => {
-        return list.map((item) => {
+        return data?.map((item) => {
             return <Box borderColor={'#dde3e7'} border={'1px solid #dde3e7'} key={item.id} borderRadius={5} width={208}
                         height={328}>
                 <Box height={206} width={206} overflow={"hidden"} borderRadius={5}>
@@ -78,9 +64,9 @@ export const Traits: React.FC<{ attributeId: number, total: number }> = (props) 
                 </Stack>
             </Box>
         })
-    }, [list])
+    }, [data])
     return <Stack direction={"row"} width={'100%'} sx={{overflowX:'auto'}} height={360} spacing={3} marginTop={3}>
-        {loading ? s : s2}
+        {isValidating&&data?.length==0 ? s : s2}
     </Stack>
 }
 export default Traits;

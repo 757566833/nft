@@ -1,4 +1,4 @@
-import React, {Key, useCallback} from "react";
+import React, {Key, useCallback, useState} from "react";
 import {Box, Menu, MenuItem, Stack, Typography} from "@mui/material";
 import {Dropdown} from "@/lib/react-component";
 import ControlPointOutlinedIcon from "@mui/icons-material/ControlPointOutlined";
@@ -8,25 +8,31 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {IAttribute} from "@/services";
 import {useTrait} from "@/components/manage/context/trait";
 import Traits from "@/components/manage/traits";
+import EditAttribute from "@/components/manage/edit/attribute";
 
 
-
-export const Attributes:React.FC<{list?:IAttribute[],loading?:boolean}> = (props)=>{
+export const Attributes: React.FC<{ list?: IAttribute[], loading?: boolean }> = (props) => {
     const {list} = props
-    const [,setAddTraitState] = useTrait();
-    const handleAdd = useCallback((id:number,name:string)=>{
+    const [, setAddTraitState] = useTrait();
+    const [editVisible, setEditVisible] = useState(false)
+    const [editId, setEditId] = useState<number | undefined>();
+    const handleAdd = useCallback((id: number, name: string) => {
         setAddTraitState({
-            addVisible:true,
-            addAttribute:name,
-            addAttributeId:id
+            addVisible: true,
+            addAttribute: name,
+            addAttributeId: id
         })
-    },[setAddTraitState])
+    }, [setAddTraitState])
 
-    const render =useCallback( (item:IAttribute)=>{
-        const handleClick = (e:React.MouseEvent<HTMLDivElement, MouseEvent>,key?: Key | null | undefined)=>{
-            switch (key){
+    const render = useCallback((item: IAttribute) => {
+        const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, key?: Key | null | undefined) => {
+            switch (key) {
                 case "add":
-                    handleAdd(item.id,item.name)
+                    handleAdd(item.id, item.name)
+                    break
+                case "edit":
+                    setEditId(item.id)
+                    setEditVisible(true)
                     break
             }
         }
@@ -40,13 +46,13 @@ export const Attributes:React.FC<{list?:IAttribute[],loading?:boolean}> = (props
                         </Stack>
                     </MenuItem>
 
-                    <MenuItem  key={'edit'}>
+                    <MenuItem key={'edit'}>
                         <Stack direction={"row"} spacing={1}>
                             <EditOutlinedIcon/> <Typography>Edit Attribute</Typography>
                         </Stack>
                     </MenuItem>
 
-                    <MenuItem  key={'delete'}>
+                    <MenuItem key={'delete'}>
                         <Stack direction={"row"} spacing={1}>
                             <DeleteOutlineOutlinedIcon/> <Typography>Delete</Typography>
                         </Stack>
@@ -60,8 +66,17 @@ export const Attributes:React.FC<{list?:IAttribute[],loading?:boolean}> = (props
                 <Traits attributeId={item.id} total={item.count}/>
             </Box>
         </Box>
-    },[handleAdd])
+    }, [handleAdd])
+    const handleEditFinish = useCallback(() => {
+        setEditId(undefined)
+        setEditVisible(false)
+    }, [])
+    const handleEditCancel = useCallback(() => {
+        setEditId(undefined)
+        setEditVisible(false)
+    }, [])
     return <Box>
+        <EditAttribute onFinish={handleEditFinish} id={editId} visible={editVisible} onCancel={handleEditCancel}/>
         {list?.map(render)}
     </Box>
 }

@@ -1,5 +1,5 @@
 import useSWR, {useSWRConfig} from "swr";
-import {addAttribute, fetcher, getAttributes, IAddAttributeRequest} from "@/services";
+import {addAttribute, editAttribute, fetcher, getAttributes, IAttributeRequest} from "@/services";
 import {useCallback} from "react";
 
 export const ATTRIBUTES = 'attributes'
@@ -11,7 +11,7 @@ export const useAttributes = ()=>{
 
 export const useAddAttribute = ()=>{
     const {mutate} = useSWRConfig()
-   const add = useCallback(async (params:IAddAttributeRequest)=>{
+   const add = useCallback(async (params:Omit<IAttributeRequest, 'id'>)=>{
        const res = await addAttribute(params);
        if(res){
            await mutate(ATTRIBUTES)
@@ -22,3 +22,15 @@ export const useAddAttribute = ()=>{
     return [add]
 }
 
+export const useEditAttribute = ()=>{
+    const {mutate} = useSWRConfig()
+    const add = useCallback(async (params:IAttributeRequest)=>{
+        const res = await editAttribute(params);
+        if(res){
+            await mutate(ATTRIBUTES)
+            return res
+        }
+    },[mutate])
+
+    return [add]
+}

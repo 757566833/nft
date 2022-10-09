@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from "react";
 import {Button, Stack, TextField} from "@mui/material";
 import {Modal} from "@/lib/react-component";
 import { useForm } from "react-hook-form";
-import {useAddAttribute} from "@/http";
+import {useAddAttribute} from "@/http/attribute";
 interface add{
     name:string,
     zIndex:number
@@ -24,7 +24,11 @@ const AddAttribute:React.FC<{onFinish:()=>void}> = (props)=>{
         setAddVisible(false)
     },[])
     const handleAdd = useCallback(async (data:add)=>{
-        const res = await addAttribute(data)
+        const res = await addAttribute({
+            ...data,
+            zIndex:Number.parseInt(`${data.zIndex}`)
+        })
+        setAddVisible(false)
         if(res){
             onFinish()
         }
