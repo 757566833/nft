@@ -25,7 +25,12 @@ export const List: React.FC = () => {
     },[preview, setCountValue])
     return <>
         {preview.filter(item=>filterValue.length>0?intersection(filterValue,item.map(i=>i.traitId)).length>0:true).map((group, index) => {
-            return <Box border={"1px solid #dde3e7"} display={"inline-block"} margin={2} key={index} width={240}
+            return <Box sx={{
+                '&:hover':{
+                    boxShadow:'0px 0px 10px  #b5b5b5',
+                    cursor:'pointer'
+                }
+            }} border={"1px solid #dde3e7"} display={"inline-block"} margin={2} key={index} width={240}
                         height={288} borderRadius={3} overflow={"hidden"}>
                 <Box width={240} height={240} position={"relative"}>
                     {group.map((item, index) => {

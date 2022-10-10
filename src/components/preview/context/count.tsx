@@ -1,12 +1,12 @@
-import React, {PropsWithChildren, useCallback, useEffect} from "react";
+import React, {PropsWithChildren, useCallback} from "react";
 type IAction = {
     type: 'change',
-    count: Record<number, number>
+    value: Record<number, number>
 }
 
 export const countReducer: (state: Record<number, number>, action: IAction) => Record<number, number> = (state, action) => {
     if (action.type == 'change') {
-        return action.count;
+        return action.value;
     } else{
         return  state
     }
@@ -35,7 +35,7 @@ export const useCountValue:()=>[Record<number, number>,(count:Record<number, num
     const set = useCallback((count:Record<number, number>)=>{
         dispatch({
             type:'change',
-            count:count
+            value:count
         })
     },[dispatch])
     return [state,set]
