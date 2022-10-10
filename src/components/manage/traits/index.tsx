@@ -8,14 +8,9 @@ import React, {
 } from "react";
 import {Box, Slider, Stack, Typography, Skeleton} from "@mui/material";
 import {useTraits} from "@/http/trait";
+import {sum} from "@/utils";
 
-const sum = (arr: (number | null)[]) => {
-    let sum = 0;
-    for (const num of arr) {
-        sum += num || 0
-    }
-    return sum
-}
+
 
 const map: Record<number, string> = {
     0: 'Zero',
@@ -24,7 +19,15 @@ const map: Record<number, string> = {
     75: 'Often',
     100: 'Very Often'
 }
-const Traits: React.ForwardRefRenderFunction<{value:{url:string,name:string,num:number|null}[]},{ attributeId: number, total: number }> = (props,ref) => {
+export type TraitsRefValue = {attributeId:number,traitId:number, url: string; name: string; value: number | null; }[]
+export interface TraitsProps{
+    attributeId: number,
+    total: number
+}
+export interface TraitsRef{
+    getValue: () => TraitsRefValue
+}
+const Traits: React.ForwardRefRenderFunction<TraitsRef,TraitsProps> = (props,ref) => {
     const {attributeId, total} = props;
     const {data, error, isValidating, mutate} = useTraits(attributeId)
     const s = useMemo(() => {
@@ -111,23 +114,27 @@ const Traits: React.ForwardRefRenderFunction<{value:{url:string,name:string,num:
             </Box>
         })
     }, [data, handleChange, rates])
-    useImperativeHandle(ref,()=> {
-        const value:{url:string,name:string,num:number|null}[] = []
+    const getValue = useCallback(()=>{
+        const value:TraitsRefValue = []
         if(!data){
-            return {value}
+            return value
         }
         for (let i = 0; i < data.length; i++) {
             value.push({
+                attributeId:data[i].attributeId,
+                traitId:data[i].id,
                 url:data[i].url,
                 name:data[i].name,
-                num:itemsRef.current[i]
+                value:itemsRef.current[i]
             })
         }
-        return {value}
-        // value:itemsRef.current
+        return value
     },[data])
+    useImperativeHandle(ref,()=> ({
+        getValue
+    }),[getValue])
     return <Stack direction={"row"} width={'100%'} sx={{overflowX: 'auto'}} height={360} spacing={3} marginTop={3}>
         {isValidating && data?.length == 0 ? s : s2}
     </Stack>
 }
-export default React.forwardRef<{ value:{url:string,name:string,num:number|null}[] },{ attributeId: number, total: number }>(Traits);
+export default React.forwardRef<TraitsRef,TraitsProps>(Traits);
