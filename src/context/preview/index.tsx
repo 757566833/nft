@@ -1,20 +1,20 @@
 import React, {PropsWithChildren, useCallback, useEffect} from "react";
-type  IState ={zIndex:number,url:string}[]
+export type  PreviewItem ={attributeId:number,traitId:number,url:string,zIndex:number}[]
+export type  PreviewList =PreviewItem[]
 type IAction = {
     type: 'change',
-    value: IState
+    value: PreviewList
 }
-const  MODE_KEY='preview'
 
-export const previewReducer: (state: IState, action: IAction) => IState = (state, action) => {
+export const previewReducer: (state: PreviewList, action: IAction) => PreviewList = (state, action) => {
     if (action.type == 'change') {
         return action.value;
     } else{
         return  state
     }
 };
-export const previewDefaultValue: IState =[];
-export const PreviewContext = React.createContext<{state:IState, dispatch: React.Dispatch<IAction>}>({
+export const previewDefaultValue: PreviewList =[];
+export const PreviewContext = React.createContext<{state:PreviewList, dispatch: React.Dispatch<IAction>}>({
     state: previewDefaultValue, dispatch: () => {
         //
     },
@@ -32,9 +32,9 @@ export const PreviewProvider :React.FC<PropsWithChildren<unknown>> = (props) => 
 }
 export default PreviewProvider;
 
-export const usePreview:()=>[IState,(value:IState)=>void] = ()=>{
+export const usePreview:()=>[PreviewList,(value:PreviewList)=>void] = ()=>{
     const {state,dispatch} =React.useContext(PreviewContext);
-    const set = useCallback((value:IState)=>{
+    const set = useCallback((value:PreviewList)=>{
         dispatch({
             type:'change',
             value:value

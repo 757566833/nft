@@ -1,4 +1,5 @@
 import {AttributesRefValue} from "@/components/manage/attributes";
+import {PreviewList} from "@/context/preview";
 
 /**
  * 引用传递，会改变传进来的数组
@@ -29,8 +30,8 @@ export const sum = (arr: (number | null)[]) => {
 }
 const total = 100;
 
-export const func:(source:AttributesRefValue)=>{url:string,zIndex:number}[][] = (source)=>{
-    const result:{url:string,zIndex:number}[][] = new Array(total)
+export const func:(source:AttributesRefValue)=>PreviewList = (source)=>{
+    const result:PreviewList = new Array(total)
     for (const sourceElement of source) {
         const traits = sourceElement.traits||[]
 

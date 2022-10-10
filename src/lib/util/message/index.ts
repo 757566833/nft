@@ -22,7 +22,7 @@ export class message {
     static loop: HTMLDivElement[] = []
     static body = globalThis?.document?.body||{};
     static modeId = 'colorScheme'
-    static modeAttr = 'colorScheme'
+    static modeAttr = 'content'
     /**
      *
      */
