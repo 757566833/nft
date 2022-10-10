@@ -1,13 +1,18 @@
-import React, {useCallback, useEffect, useImperativeHandle, useMemo, useState} from "react";
+import React, {
+    useCallback,
+    useEffect,
+    useImperativeHandle,
+    useMemo,
+    useRef,
+    useState
+} from "react";
 import {Box, Slider, Stack, Typography, Skeleton} from "@mui/material";
-import {getTraits, ITrait} from "@/services";
-import {auto} from "@popperjs/core";
 import {useTraits} from "@/http/trait";
 
-const sum = (arr:number[])=>{
+const sum = (arr: (number | null)[]) => {
     let sum = 0;
     for (const num of arr) {
-        sum+=num
+        sum += num || 0
     }
     return sum
 }
@@ -19,15 +24,9 @@ const map: Record<number, string> = {
     75: 'Often',
     100: 'Very Often'
 }
-export const Traits: React.FC<{ attributeId: number, total: number }> = (props) => {
+const Traits: React.ForwardRefRenderFunction<{value:{url:string,name:string,num:number|null}[]},{ attributeId: number, total: number }> = (props,ref) => {
     const {attributeId, total} = props;
-    const {data, error, isValidating, mutate} =  useTraits(attributeId)
-    const [values,setValues] = useState<number[]>([])
-    useEffect(()=>{
-        if(data){
-            setValues(new Array(data.length).fill(0))
-        }
-    },[data])
+    const {data, error, isValidating, mutate} = useTraits(attributeId)
     const s = useMemo(() => {
         const array = new Array(total).fill('')
         return array.map((_, index) => <Box key={index} border={'1px solid #dde3e7'} borderRadius={5} width={208}
@@ -54,21 +53,37 @@ export const Traits: React.FC<{ attributeId: number, total: number }> = (props) 
             </Stack>
         </Box>)
     }, [total])
-    const handleChange = useCallback((value:number,index:number)=>{
-        const nextValue = [...values]
-        nextValue[index] = value;
-        setValues(nextValue)
-    },[values])
+    const itemsRef = useRef<(number | null)[]>([]);
+    // you can access the elements with itemsRef.current[n]
+
+    useEffect(() => {
+        if (data) {
+            itemsRef.current = itemsRef.current.slice(0, data?.length);
+        }
+
+    }, [data]);
+
+    const [rates, setRates] = useState<string[]>([])
+    const handleChange = useCallback(() => {
+        const nums = itemsRef.current
+        const numSum = sum(nums);
+        const nextRates = [...rates]
+        for (let i = 0; i < nums.length; i++) {
+            if (numSum != 0) {
+                nextRates[i] = (((nums[i] || 0) / numSum) * 100).toFixed(2)
+            }else{
+                nextRates[i]='0.00'
+            }
+        }
+        setRates(nextRates)
+    }, [rates])
     const s2 = useMemo(() => {
 
-        return data?.map((item,index) => {
-            const onChange = (event: Event, value: number | number[], activeThumb: number)=>{
-                handleChange(value as number,index)
-            }
-            const numSum = sum(values);
-            let rate = '0.00'
-            if(numSum!=0){
-                rate = ((values[index] / numSum)*100).toFixed(2)
+        return data?.map((item, index) => {
+            const onChange = (e: Event, value: number | number[]) => {
+                const items = itemsRef.current
+                items[index] = value as number
+                handleChange()
             }
             return <Box borderColor={'#dde3e7'} border={'1px solid #dde3e7'} key={item.id} borderRadius={5} width={208}
                         height={328}>
@@ -86,20 +101,33 @@ export const Traits: React.FC<{ attributeId: number, total: number }> = (props) 
                 <Stack width={206} height={120} padding={2} spacing={1}>
                     <Typography fontWeight={"bold"}>{item.name}</Typography>
                     <Box paddingLeft={1} paddingRight={1}>
-                        <Slider value={values[index]} onChange={onChange} marks valueLabelDisplay="auto" step={25} valueLabelFormat={(number) => map[number]}/>
+                        <Slider onChange={onChange} marks valueLabelDisplay="auto" step={25}
+                                valueLabelFormat={(number) => map[number]}/>
                     </Box>
                     <Box paddingLeft={1} paddingRight={1}>
-                        <Typography variant={"body2"}>{rate}%</Typography>
+                        <Typography variant={"body2"}>{rates[index] || "0.00"}%</Typography>
                     </Box>
                 </Stack>
             </Box>
         })
-    }, [data, handleChange, values])
-    // useImperativeHandle(ref,()=>{
-    //
-    // },[])
-    return <Stack direction={"row"} width={'100%'} sx={{overflowX:'auto'}} height={360} spacing={3} marginTop={3}>
-        {isValidating&&data?.length==0 ? s : s2}
+    }, [data, handleChange, rates])
+    useImperativeHandle(ref,()=> {
+        const value:{url:string,name:string,num:number|null}[] = []
+        if(!data){
+            return {value}
+        }
+        for (let i = 0; i < data.length; i++) {
+            value.push({
+                url:data[i].url,
+                name:data[i].name,
+                num:itemsRef.current[i]
+            })
+        }
+        return {value}
+        // value:itemsRef.current
+    },[data])
+    return <Stack direction={"row"} width={'100%'} sx={{overflowX: 'auto'}} height={360} spacing={3} marginTop={3}>
+        {isValidating && data?.length == 0 ? s : s2}
     </Stack>
 }
-export default Traits;
+export default React.forwardRef<{ value:{url:string,name:string,num:number|null}[] },{ attributeId: number, total: number }>(Traits);

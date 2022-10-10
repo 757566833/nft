@@ -12,7 +12,7 @@ export interface ITrait{
     id:number
     attributeId:number
     name:string,
-    url:number
+    url:string
 }
 export interface IResponse<T> {
     code:number,
