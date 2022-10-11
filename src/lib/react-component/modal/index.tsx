@@ -11,56 +11,57 @@ const Transition = React.forwardRef(function Transition(
     },
     ref: React.Ref<unknown>,
 ) {
-  return <Slide direction="up" ref={ref} {...props} />;
+    return <Slide direction="up" ref={ref} {...props} />;
 });
-export const Modal: React.FC<PropsWithChildren<ModalProps>> = (props) => {
-  const {
-    onOk,
-    onCancel,
-    title = '',
-    children,
-    okText = '确定',
-    cancelText = '取消',
-    childrenType,
-    loading = false,
-    ...others
-  } = props;
-  const memo = useMemo(() => {
-    if (typeof children == 'string' || childrenType == 'string') {
-      return <DialogContentText>
-        {children}
-      </DialogContentText>;
-    } else {
-      return <>{children}</>;
-    }
-  }, [children, childrenType]);
-  return <Dialog
+export const Modal: React.FC<PropsWithChildren<ModalProps & { noFooter?: boolean }>> = (props) => {
+    const {
+        onOk,
+        onCancel,
+        title = '',
+        children,
+        okText = '确定',
+        cancelText = '取消',
+        childrenType,
+        loading = false,
+        noFooter = false,
+        ...others
+    } = props;
+    const memo = useMemo(() => {
+        if (typeof children == 'string' || childrenType == 'string') {
+            return <DialogContentText>
+                {children}
+            </DialogContentText>;
+        } else {
+            return <>{children}</>;
+        }
+    }, [children, childrenType]);
+    return <Dialog
 
-    {...others}
-    TransitionComponent={Transition}
-  >
-    <DialogTitle>{title}</DialogTitle>
-    <DialogContent>
-      {memo}
-    </DialogContent>
-    <DialogActions>
-      <LoadingButton
-        size="small"
-        onClick={onCancel}
-        loading={loading}
-        variant="contained"
-      >
-        {cancelText}
-      </LoadingButton>
-      <LoadingButton
-        size="small"
-        onClick={onOk}
-        loading={loading}
-        variant="contained"
-      >
-        {okText}
-      </LoadingButton>
-    </DialogActions>
-  </Dialog>;
+        {...others}
+        TransitionComponent={Transition}
+    >
+        <DialogTitle>{title}</DialogTitle>
+        <DialogContent>
+            {memo}
+        </DialogContent>
+        {!noFooter&&<DialogActions>
+            <LoadingButton
+                size="small"
+                onClick={onCancel}
+                loading={loading}
+                variant="contained"
+            >
+                {cancelText}
+            </LoadingButton>
+            <LoadingButton
+                size="small"
+                onClick={onOk}
+                loading={loading}
+                variant="contained"
+            >
+                {okText}
+            </LoadingButton>
+        </DialogActions>}
+    </Dialog>;
 };
 export default Modal;

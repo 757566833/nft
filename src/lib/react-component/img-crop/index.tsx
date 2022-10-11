@@ -139,7 +139,6 @@ const ImgCrop: ForwardRefRenderFunction<{ getBlob: () => Promise<Blob | undefine
     useImperativeHandle(ref, () => ({
         getBlob,
     }), [getBlob])
-    console.log(width)
     return <>
         <ReactCrop
             crop={crop}
