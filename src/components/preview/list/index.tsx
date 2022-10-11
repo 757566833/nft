@@ -1,37 +1,61 @@
-import React, {useEffect} from "react";
+import React, {useCallback, useEffect} from "react";
 import {Box, Typography} from "@mui/material";
-import {usePreview} from "@/context/preview";
+import {PreviewItem, usePreview} from "@/context/preview";
 import {useFilterValue} from "@/components/preview/context/filter";
 import {intersection} from "@/utils";
 import {useCountValue} from "@/components/preview/context/count";
+import Edit from "@/components/preview/edit";
+import {useEdit} from "@/components/preview/context/edit";
 
 export const List: React.FC = () => {
     const [preview] = usePreview();
     const [filterValue] = useFilterValue();
-    const [,setCountValue] = useCountValue()
-    useEffect(()=>{
-        const map:Record<number, number>={}
+    const [, setCountValue] = useCountValue()
+    useEffect(() => {
+        const map: Record<number, number> = {}
         for (let i = 0; i < preview.length; i++) {
             const group = preview[i];
             for (let j = 0; j < group.length; j++) {
-                if(map[group[j].traitId]){
-                    map[group[j].traitId] = map[group[j].traitId]+1
-                }else {
+                if (map[group[j].traitId]) {
+                    map[group[j].traitId] = map[group[j].traitId] + 1
+                } else {
                     map[group[j].traitId] = 1
                 }
             }
         }
         setCountValue(map)
-    },[preview, setCountValue])
+    }, [preview, setCountValue])
+    const [,setEdit] = useEdit()
+
+    const handleChange = useCallback((group:PreviewItem,index:number)=>{
+        setEdit({
+            visible:true,
+            value:{
+                index,
+                data:group
+            }
+        })
+    },[setEdit])
     return <>
-        {preview.filter(item=>filterValue.length>0?intersection(filterValue,item.map(i=>i.traitId)).length>0:true).map((group, index) => {
-            return <Box sx={{
-                '&:hover':{
-                    boxShadow:'0px 0px 10px  #b5b5b5',
-                    cursor:'pointer'
-                }
-            }} border={"1px solid #dde3e7"} display={"inline-block"} margin={2} key={index} width={240}
-                        height={288} borderRadius={3} overflow={"hidden"}>
+        <Edit/>
+        {preview.filter(item => filterValue.length > 0 ? intersection(filterValue, item.map(i => i.traitId)).length > 0 : true).map((group, index) => {
+            return <Box
+                sx={{
+                    '&:hover': {
+                        boxShadow: '0px 0px 10px  #b5b5b5',
+                        cursor: 'pointer'
+                    }
+                }}
+                border={"1px solid #dde3e7"}
+                display={"inline-block"}
+                margin={2}
+                key={index}
+                width={240}
+                height={288}
+                borderRadius={3}
+                overflow={"hidden"}
+                onClick={()=>handleChange(group,index)}
+            >
                 <Box width={240} height={240} position={"relative"}>
                     {group.map((item, index) => {
                         return <Box key={index} width={240} height={240} position={"absolute"}

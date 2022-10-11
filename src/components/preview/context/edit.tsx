@@ -2,7 +2,10 @@ import React, {PropsWithChildren, useCallback} from "react";
 import {PreviewItem} from "@/context/preview";
 type IState={
     visible:boolean,
-    data:PreviewItem
+    value?:{
+        data:PreviewItem,
+        index:number
+    }
 }
 type IAction = {
     type: 'change',
@@ -10,6 +13,7 @@ type IAction = {
 }
 
 export const editReducer: (state: IState, action: IAction) => IState = (state, action) => {
+    console.log(action)
     if (action.type == 'change') {
         return {
             ...state,
@@ -19,7 +23,7 @@ export const editReducer: (state: IState, action: IAction) => IState = (state, a
         return  state
     }
 };
-export const editDefaultValue: IState = {visible:false,data:[]};
+export const editDefaultValue: IState = {visible:false};
 export const EditContext = React.createContext<{state:IState, dispatch: React.Dispatch<IAction>}>({
     state: editDefaultValue, dispatch: () => {
         //
@@ -38,29 +42,13 @@ export const EditProvider :React.FC<PropsWithChildren<unknown>> = (props) => {
 }
 export default EditProvider;
 
-export const useEditValue:()=>[PreviewItem,(edit:PreviewItem)=>void] = ()=>{
+export const useEdit:()=>[IState|undefined,(value:IState)=>void] = ()=>{
     const {state,dispatch} =React.useContext(EditContext);
-    const set = useCallback((edit:PreviewItem)=>{
+    const set = useCallback((value:IState)=>{
         dispatch({
             type:'change',
-            value: {
-                ...state,
-                data:edit
-            }
+            value: value
         })
-    },[dispatch, state])
-    return [state.data,set]
-}
-export const useEditVisible:()=>[boolean,(visible:boolean)=>void] = ()=>{
-    const {state,dispatch} =React.useContext(EditContext);
-    const set = useCallback((visible:boolean)=>{
-        dispatch({
-            type:'change',
-            value: {
-                ...state,
-                visible
-            }
-        })
-    },[dispatch, state])
-    return [state.visible,set]
+    },[dispatch])
+    return [state,set]
 }
