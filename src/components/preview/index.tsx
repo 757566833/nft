@@ -1,19 +1,23 @@
-import React, {useMemo} from "react";
-import {Box} from "@mui/material";
+import React, {useCallback, useMemo} from "react";
+import {Box, Button, Stack} from "@mui/material";
 import Filter from "@/components/preview/filter";
 import FilterProvider from "@/components/preview/context/filter";
 import List from "@/components/preview/list";
 import CountProvider from "@/components/preview/context/count";
 import EditProvider from "@/components/preview/context/edit";
+import {generateImage} from "@/utils";
+import Download from "@/components/preview/download";
 
 export const Preview: React.FC = () => {
+
     return <FilterProvider>
         <CountProvider>
             <EditProvider>
                 <Box display={"flex"}>
-                    <Box width={240} padding={2}>
+                    <Stack width={240} padding={2} spacing={3}>
                         <Filter/>
-                    </Box>
+                        <Download/>
+                    </Stack>
                     <Box flex={1} padding={2}>
                         <List/>
                     </Box>

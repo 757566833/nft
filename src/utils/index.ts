@@ -5,7 +5,7 @@ import {PreviewList} from "@/context/preview";
  * 引用传递，会改变传进来的数组
  * @param arr
  */
-const shuffle:<T>(arr:T[])=>void = (array)=>{
+const shuffle: <T>(arr: T[]) => void = (array) => {
     const length = array == null ? 0 : array.length
     if (!length) {
         return []
@@ -28,32 +28,36 @@ export const sum = (arr: (number | null)[]) => {
 }
 const total = 100;
 
-export const func:(source:AttributesRefValue)=>PreviewList = (source)=>{
-    const result:PreviewList = []
+export const func: (source: AttributesRefValue) => PreviewList = (source) => {
+    const result: PreviewList = []
     for (const sourceElement of source) {
-        const traits = sourceElement.traits||[]
+        const traits = sourceElement.traits || []
 
-        let currentArray:{attributeId: number, traitId: number, url: string}[] = [];
+        let currentArray: { attributeId: number, traitId: number, url: string }[] = [];
         for (const trait of traits) {
-            if(trait.value){
-                currentArray = [...currentArray,...new Array(trait.value).fill({attributeId:trait.attributeId,traitId:trait.traitId, url: trait.url})]
+            if (trait.value) {
+                currentArray = [...currentArray, ...new Array(trait.value).fill({
+                    attributeId: trait.attributeId,
+                    traitId: trait.traitId,
+                    url: trait.url
+                })]
             }
 
         }
-        while (currentArray.length<total){
-            currentArray = [...currentArray,...currentArray]
+        while (currentArray.length < total) {
+            currentArray = [...currentArray, ...currentArray]
         }
         shuffle(currentArray)
         for (let i = 0; i < 100; i++) {
-            if(result[i]){
+            if (result[i]) {
                 result[i].push({
                     ...currentArray[i],
-                    zIndex:sourceElement.zIndex
+                    zIndex: sourceElement.zIndex
                 })
-            }else{
-                result[i]=[{
+            } else {
+                result[i] = [{
                     ...currentArray[i],
-                    zIndex:sourceElement.zIndex
+                    zIndex: sourceElement.zIndex
                 }]
             }
 
@@ -62,6 +66,46 @@ export const func:(source:AttributesRefValue)=>PreviewList = (source)=>{
     }
     return result
 }
-export const intersection:<T>(array1:T[],array2:T[])=>T[]  = (array1,array2)=>{
+export const intersection: <T>(array1: T[], array2: T[]) => T[] = (array1, array2) => {
     return array1.filter(value => array2.includes(value));
+}
+
+export const generateImage = (images: string[],name:string) => {
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 600;
+    canvas.height = 600;
+    const imageList: HTMLImageElement[] = []
+    for (let i = 0; i < images.length; i++) {
+        const img = new Image()
+        img.src = images[i]
+        img.setAttribute("crossOrigin", 'Anonymous')
+        imageList.push(img)
+    }
+    const loadList = []
+    for (let i = 0; i < imageList.length; i++) {
+        loadList.push(new Promise<void>((res, rej) => {
+            imageList[i].onload = () => {
+                res();
+            }
+        }))
+    }
+    if (ctx) {
+        // 两张图片都加载完成后绘制于Canva中
+        let drawAllImg = Promise.all(loadList).then((res) => {
+            for (let i = 0; i < imageList.length; i++) {
+                ctx?.drawImage(imageList[i], 0, 0, 600, 600);
+            }
+        });
+        drawAllImg.then(() => {
+            let outputImg = new Image();
+            outputImg.src = ctx?.canvas.toDataURL() || '';
+            let link = document.createElement("a");
+            link.download = name;
+            link.href = outputImg.src;
+            link.click();
+        });
+    }
+
 }

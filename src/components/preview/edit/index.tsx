@@ -1,10 +1,11 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {Box} from "@mui/material";
+import {Box, Button, Stack} from "@mui/material";
 import {Modal} from "@/lib/react-component";
 import {useEdit} from "@/components/preview/context/edit";
 import {PreviewItem, usePreview} from "@/context/preview";
 import Group from "@/components/preview/edit/group";
 import {ITrait} from "@/services";
+import {generateImage} from "@/utils";
 
 export const Edit: React.FC = () => {
     const [edit, setEdit] = useEdit()
@@ -23,30 +24,6 @@ export const Edit: React.FC = () => {
             setData([])
         }
     },[value?.data])
-    // const handleChange = useCallback((attributeId:number,item:ITrait)=>{
-    //     if(value){
-    //         const current   = preview[value.index]
-    //         for (let i = 0; i < current.length; i++) {
-    //             const img = current[i];
-    //             if(img.attributeId==attributeId){
-    //                 if(img.url!=item.url){
-    //                     const nextImg:{attributeId:number,traitId:number,url:string,zIndex:number} = {
-    //                         attributeId:img.attributeId,
-    //                         traitId:item.id,
-    //                         url:item.url,
-    //                         zIndex:img.zIndex
-    //                     }
-    //                     const nextCurrent = [...current]
-    //                     nextCurrent[i] = nextImg
-    //                     const nextPreview = [...preview]
-    //                     nextPreview[value.index] = nextCurrent
-    //                     setPreview(nextPreview)
-    //                 }
-    //             }
-    //         }
-    //     }
-    //
-    // },[preview, setPreview, value])
     const handleOk = useCallback(()=>{
         if(value){
             const nextPreview = [...preview]
@@ -80,9 +57,12 @@ export const Edit: React.FC = () => {
         }
 
     },[data, value])
+    const handleDownload = useCallback(()=>{
+        generateImage(data.map(item=>`${process.env.NEXT_PUBLIC_FILE}${item.url}`),`demo${value?.index||0}.png`)
+    },[data, value?.index])
     return <>
         <Modal open={!!visible} onCancel={handleCancel} maxWidth={false} onOk={handleOk}>
-            <Box display={"flex"} width={864}>
+            <Box display={"flex"} width={864} height={600}>
                 <Box width={600} height={600} position={"relative"}>
                     {data.map((item, index) => {
                         return <Box key={index} width={600} height={600} position={"absolute"}
@@ -90,10 +70,15 @@ export const Edit: React.FC = () => {
                                     component={"img"} src={`${process.env.NEXT_PUBLIC_FILE}${item.url}`}/>
                     })}
                 </Box>
-
-                <Box width={240} marginLeft={3} height={600} overflow={"auto"}>
-                    <Group preview={data} onChange={handleChange}/>
+                <Box display={"flex"} flexDirection={"column"} justifyContent={"space-between"} alignItems={"center"}>
+                    <Box width={240} marginLeft={3} height={480} flex={1} overflow={"auto"}>
+                        <Group preview={data} onChange={handleChange}/>
+                    </Box>
+                    <Box marginTop={2}>
+                        <Button variant={'contained'} onClick={handleDownload}>download</Button>
+                    </Box>
                 </Box>
+
             </Box>
         </Modal>
     </>
