@@ -27,6 +27,7 @@ const EditAttribute:React.FC<{id?:number,onFinish:()=>void,visible:boolean,onCan
         if(id){
             const res = await editAttribute({
                 ...data,
+                zIndex:Number.parseInt(`${data.zIndex}`),
                 id
             })
             if(res){

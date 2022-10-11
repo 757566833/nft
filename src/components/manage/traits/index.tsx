@@ -1,4 +1,5 @@
 import React, {
+    Key,
     useCallback,
     useEffect,
     useImperativeHandle,
@@ -6,9 +7,14 @@ import React, {
     useRef,
     useState
 } from "react";
-import {Box, Slider, Stack, Typography, Skeleton} from "@mui/material";
-import {useTraits} from "@/http/trait";
+import {Box, Slider, Stack, Typography, Skeleton, Menu, MenuItem, IconButton} from "@mui/material";
+import {useDelTrait, useTraits} from "@/http/trait";
 import {sum} from "@/utils";
+import ControlPointOutlinedIcon from "@mui/icons-material/ControlPointOutlined";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import {Dropdown} from "@/lib/react-component";
 
 
 
@@ -67,6 +73,10 @@ const Traits: React.ForwardRefRenderFunction<TraitsRef,TraitsProps> = (props,ref
     }, [data]);
 
     const [rates, setRates] = useState<string[]>([])
+    const [delTrait] = useDelTrait();
+    const handleDelete = useCallback((id:number,attributeId:number)=>{
+        delTrait(id,attributeId).then()
+    },[delTrait])
     const handleChange = useCallback(() => {
         const nums = itemsRef.current
         const numSum = sum(nums);
@@ -88,15 +98,55 @@ const Traits: React.ForwardRefRenderFunction<TraitsRef,TraitsProps> = (props,ref
                 items[index] = value as number
                 handleChange()
             }
-            return <Box borderColor={'#dde3e7'} border={'1px solid #dde3e7'} key={item.id} borderRadius={5} width={208}
+            const handleAction =(e: React.MouseEvent<HTMLDivElement, MouseEvent>, key?: Key | null | undefined)=>{
+                    switch (key) {
+                        case "delete":
+                            handleDelete(item.id,item.attributeId)
+                            break
+                    }
+                }
+            return <Box borderColor={'#dde3e7'} position={"relative"} border={'1px solid #dde3e7'} key={item.id} borderRadius={5} width={208}
                         height={328}>
-                <Box height={206} width={206} overflow={"hidden"} borderRadius={5}>
-                    <Box height={206} width={206} display={"flex"} justifyContent={"center"} alignItems={"center"} sx={{
+                <Box position={"absolute"} right={6} top={6}>
+                    <Dropdown onClick={handleAction} overlay={<Menu open={true}>
+                        {/*<MenuItem key={'add'} data-name={item.name} data-id={item.id}>*/}
+                        {/*    <Stack direction={"row"} spacing={1}>*/}
+                        {/*        <ControlPointOutlinedIcon/> <Typography>Add traits</Typography>*/}
+                        {/*    </Stack>*/}
+                        {/*</MenuItem>*/}
+
+                        {/*<MenuItem key={'edit'}>*/}
+                        {/*    <Stack direction={"row"} spacing={1}>*/}
+                        {/*        <EditOutlinedIcon/> <Typography>Edit Attribute</Typography>*/}
+                        {/*    </Stack>*/}
+                        {/*</MenuItem>*/}
+
+                        <MenuItem key={'delete'}>
+                            <Stack direction={"row"} spacing={1}>
+                                <DeleteOutlineOutlinedIcon/> <Typography>Delete</Typography>
+                            </Stack>
+                        </MenuItem>
+                    </Menu>}>
+                        <IconButton sx={{background:'white','&:hover':{background:'white'}}}>
+                            <MoreHorizIcon/>
+                        </IconButton>
+                    </Dropdown>
+                </Box>
+                <Box sx={{
+                    '&:hover': {
+                        cursor: 'pointer',
+                        background:'#eaeaea'
+                    },
+                    transition:'all 0.28s'
+                }} height={206} width={206} overflow={"hidden"} borderRadius={5}>
+                    <Box  height={206} width={206} display={"flex"} justifyContent={"center"} alignItems={"center"} sx={{
                         backgroundImage: 'linear-gradient(45deg,#eee 25%,transparent 0,transparent 75%,#eee 0),linear-gradient(45deg,#eee 25%,transparent 0,transparent 75%,#eee 0);',
                         backgroundSize: '16px 16px',
                         backgroundPosition: '0 0,8px 8px'
                     }}>
-                        <Box component={"img"} height={174} width={174}
+                        <Box component={"img"}
+                             height={174}
+                             width={174}
                              src={`${process.env.NEXT_PUBLIC_FILE}${item.url}`}/>
                     </Box>
 
@@ -113,7 +163,7 @@ const Traits: React.ForwardRefRenderFunction<TraitsRef,TraitsProps> = (props,ref
                 </Stack>
             </Box>
         })
-    }, [data, handleChange, rates])
+    }, [data, handleChange, handleDelete, rates])
     const getValue = useCallback(()=>{
         const value:TraitsRefValue = []
         if(!data){

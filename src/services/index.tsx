@@ -118,3 +118,17 @@ export const addTrait = async (params:IAddTraitRequest)=>{
     const json = await res.json()
     return json;
 }
+
+export const delTrait = async (id:number)=>{
+    const url = `${server}/trait/${id}`
+    const res =  await fetch(url,{
+        method:'DELETE',
+    })
+    if( res.status>=300){
+        message.error('请求错误')
+        return
+    }
+
+    const json = await res.json()
+    return json;
+}

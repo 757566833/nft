@@ -19,7 +19,7 @@ const AddTrait:React.FC = ()=>{
     const file = watch("url")
     const [traitState,setTraitState ] = useTrait();
     const {addVisible,addAttributeId,addAttribute} = traitState
-    const [addTrait] = useAddTrait(addAttributeId)
+    const [addTrait] = useAddTrait()
     const cropRef = useRef<{ getBlob: () => Promise<Blob | undefined> | undefined; }>(null)
 
 
@@ -30,7 +30,22 @@ const AddTrait:React.FC = ()=>{
     },[setTraitState])
     const handleAdd = useCallback(async (data:add)=>{
         const blob = await cropRef.current?.getBlob()
+        console.log(blob)
+
         if(blob&&addAttributeId){
+            const objectURL = URL.createObjectURL(blob);
+            const a = new Image()
+            a.src = objectURL
+            const loadList=[]
+            loadList.push(new Promise<void>((res,rej)=>{
+                a.onload = ()=>{
+                    res();
+                }
+            }))
+             await Promise.all(loadList)
+            console.log(a.width)
+            console.log(a.height)
+
             const type = blob.type
             const [,suffix] = type.split("/");
             const file = new File([blob],`file.${suffix}`)
@@ -51,8 +66,8 @@ const AddTrait:React.FC = ()=>{
         }
     },[addAttributeId, addTrait, setTraitState])
 
-    return  <Modal title={`add ${addAttribute} trait`} keepMounted={true} open={addVisible} onCancel={handleCloseAdd} onOk={handleSubmit(handleAdd)}>
-        <Stack width={280} padding={1} spacing={2}>
+    return  <Modal title={`add ${addAttribute} trait`} keepMounted={true} maxWidth={false} open={addVisible} onCancel={handleCloseAdd} onOk={handleSubmit(handleAdd)}>
+        <Stack width={716} minHeight={716} padding={1} spacing={2}>
             <TextField fullWidth={true} label={'name'} {...register("name")}/>
             <Controller
                 name="url"
