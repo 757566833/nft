@@ -4,7 +4,7 @@ import {generateImage} from "@/utils";
 import {usePreview} from "@/context/preview";
 import {Modal} from "@/lib/react-component";
 
-export const Download: React.FC = () => {
+export const Upload: React.FC = () => {
     const [preview] = usePreview();
     const [visible, setVisible] = useState(false);
     const [timer,setTimer] = useState< NodeJS.Timer|undefined>(undefined)
@@ -35,7 +35,7 @@ export const Download: React.FC = () => {
     }, [])
     return <>
         <Modal open={visible} title={"Important reminder"} maxWidth={false} noFooter={true}>
-            <Box width={600} height={440}>
+            <Box width={600} height={600}>
                 <Stack spacing={2}>
 
                     <Box>
@@ -77,7 +77,7 @@ export const Download: React.FC = () => {
                 </Stack>
             </Box>
         </Modal>
-        <Button variant={'contained'} onClick={handleDownload}>download</Button>
+        <Button variant={'contained'} onClick={handleDownload}>upload</Button>
     </>
 }
-export default Download;
+export default Upload;

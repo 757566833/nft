@@ -7,6 +7,7 @@ import CountProvider from "@/components/preview/context/count";
 import EditProvider from "@/components/preview/context/edit";
 import {generateImage} from "@/utils";
 import Download from "@/components/preview/download";
+import Upload from "@/components/preview/upload";
 
 export const Preview: React.FC = () => {
 
@@ -17,6 +18,7 @@ export const Preview: React.FC = () => {
                     <Stack width={240} padding={2} spacing={3}>
                         <Filter/>
                         <Download/>
+                        <Upload/>
                     </Stack>
                     <Box flex={1} padding={2}>
                         <List/>
