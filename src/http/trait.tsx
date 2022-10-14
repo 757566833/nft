@@ -1,13 +1,9 @@
 import useSWR, {useSWRConfig} from "swr";
 import {
-    addAttribute,
     addTrait, delTrait,
-    editAttribute,
-    getAttributes,
     getTraits,
     IAddTraitRequest,
-    IAttributeRequest
-} from "@/services";
+} from "@/services/trait";
 import {useCallback, useMemo} from "react";
 
 export const TRAITS = 'traits'

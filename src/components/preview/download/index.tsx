@@ -77,7 +77,10 @@ export const Download: React.FC = () => {
                 </Stack>
             </Box>
         </Modal>
-        <Button variant={'contained'} onClick={handleDownload}>download</Button>
+        <Box hidden={preview.length==0}>
+            <Button variant={'contained'} onClick={handleDownload}>download</Button>
+        </Box>
+
     </>
 }
 export default Download;

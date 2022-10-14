@@ -3,11 +3,13 @@ import {Accordion, AccordionDetails, AccordionSummary, Box, Typography} from "@m
 import {useAttributes} from "@/http/attribute";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CheckboxGroup from "@/components/preview/filter/checkboxGroup";
+import {usePreview} from "@/context/preview";
 
 
 export const Filter:React.FC = ()=>{
     const {data, error, isValidating, mutate} = useAttributes()
-    return <Box border={"1px solid #dde3e7"}>
+    const [preview] = usePreview();
+    return <Box border={"1px solid #dde3e7"} hidden={preview.length==0}>
 
         {data?.filter((item)=>item.id).map((item)=>{
             return <Accordion key={item.id} elevation={0} disableGutters={true}>

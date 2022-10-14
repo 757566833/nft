@@ -1,4 +1,4 @@
-import React, {useCallback, useRef} from "react";
+import React, {useCallback, useMemo, useRef} from "react";
 import {Box, Button, Stack, Typography} from "@mui/material";
 import AddAttribute from "@/components/manage/add/attribute";
 import {useAttributes} from "@/http/attribute";
@@ -8,11 +8,25 @@ import AddTrait from "@/components/manage/add/trait";
 import {func} from "@/utils";
 import {usePreview} from "@/context/preview";
 import {message} from "@/lib/util";
+import {useWallet} from "@/context/wallet";
+import {IContract} from "@/services/contract";
+import {CURRENT_CONTRACT} from "@/constant";
+import {LocalStorage} from "@/lib/react-context";
 
+const {useLocalStorage} = LocalStorage
 const Manage: React.FC = () => {
     const {data, error, isValidating, mutate} = useAttributes()
     const attributesRef = useRef<AttributesRef>(null);
     const [,setPreview] = usePreview()
+    const [wallet] = useWallet()
+    const {chainId} = wallet
+    const [currentContract] = useLocalStorage<Record<number, IContract | null>>(CURRENT_CONTRACT, {})
+    const current = useMemo(() => {
+        if (typeof chainId == "number") {
+            return currentContract[chainId]
+        }
+        return
+    }, [chainId, currentContract])
     const handlePreview = useCallback(()=>{
         const value = attributesRef.current?.getValue()
 
@@ -37,7 +51,7 @@ const Manage: React.FC = () => {
                     <Typography fontWeight={"bold"} variant={'h3'}>Attributes</Typography>
                     <Stack direction={"row"} spacing={1} height={40}>
                         <AddAttribute onFinish={mutate}/>
-                        <Button onClick={handlePreview} variant={"outlined"}>
+                        <Button onClick={handlePreview} variant={"outlined"} disabled={!current}>
                             Preview
                         </Button>
                     </Stack>

@@ -5,7 +5,7 @@ import ControlPointOutlinedIcon from "@mui/icons-material/ControlPointOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import {IAttribute} from "@/services";
+import {IAttribute} from "@/services/attribute";
 import {useTrait} from "@/components/manage/context/trait";
 import Traits, {TraitsRef, TraitsRefValue} from "@/components/manage/traits";
 import EditAttribute from "@/components/manage/edit/attribute";

@@ -1,53 +1,72 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {Button, Stack, TextField} from "@mui/material";
 import {Modal} from "@/lib/react-component";
-import { useForm } from "react-hook-form";
+import {useForm} from "react-hook-form";
 import {useAddAttribute} from "@/http/attribute";
-interface add{
-    name:string,
-    zIndex:number
+import {useWallet} from "@/context/wallet";
+import {IContract} from "@/services/contract";
+import {CURRENT_CONTRACT} from "@/constant";
+import {LocalStorage} from "@/lib/react-context";
+
+const {useLocalStorage} = LocalStorage
+
+interface add {
+    name: string,
+    zIndex: number
 }
-const defaultParam:add = {
-    name:'',
-    zIndex:1
+
+const defaultParam: add = {
+    name: '',
+    zIndex: 1
 }
-const AddAttribute:React.FC<{onFinish:()=>void}> = (props)=>{
+const AddAttribute: React.FC<{ onFinish: () => void }> = (props) => {
     const {onFinish} = props
     const [addAttribute] = useAddAttribute()
-    const { register, handleSubmit, watch, formState: { errors },reset } = useForm<add>({defaultValues:defaultParam});
+    const {register, handleSubmit, watch, formState: {errors}, reset} = useForm<add>({defaultValues: defaultParam});
 
-    const [addVisible,setAddVisible] = useState(false)
-    const handleOpenAdd = useCallback(()=>{
+    const [addVisible, setAddVisible] = useState(false)
+    const [wallet] = useWallet()
+    const {chainId} = wallet
+    const [currentContract] = useLocalStorage<Record<number, IContract | null>>(CURRENT_CONTRACT, {})
+    const current = useMemo(() => {
+        if (typeof chainId == "number") {
+            return currentContract[chainId]
+        }
+        return
+    }, [chainId, currentContract])
+    const handleOpenAdd = useCallback(() => {
         setAddVisible(true)
-    },[])
-    const handleCloseAdd = useCallback(()=>{
+    }, [])
+    const handleCloseAdd = useCallback(() => {
         setAddVisible(false)
-    },[])
-    const handleAdd = useCallback(async (data:add)=>{
+    }, [])
+    const handleAdd = useCallback(async (data: add) => {
         const res = await addAttribute({
             ...data,
-            zIndex:Number.parseInt(`${data.zIndex}`)
+            zIndex: Number.parseInt(`${data.zIndex}`)
         })
         setAddVisible(false)
-        if(res){
+        if (res) {
             onFinish()
         }
-    },[addAttribute, onFinish])
-    useEffect(()=>{
-        if(!addVisible){
+    }, [addAttribute, onFinish])
+    useEffect(() => {
+        if (!addVisible) {
             reset()
         }
 
-    },[addVisible, reset])
+    }, [addVisible, reset])
+
     return <>
-        <Modal title={'add attribute'} keepMounted={true} open={addVisible} onCancel={handleCloseAdd} onOk={handleSubmit(handleAdd)}>
+        <Modal title={'add attribute'} keepMounted={true} open={addVisible} onCancel={handleCloseAdd}
+               onOk={handleSubmit(handleAdd)}>
             <Stack width={280} padding={1} spacing={2}>
                 <TextField fullWidth={true} label={'name'} {...register("name")}/>
                 <TextField type={"number"} fullWidth={true} label={'zIndex'} {...register("zIndex")}/>
             </Stack>
 
         </Modal>
-        <Button variant={"outlined"} onClick={handleOpenAdd}>
+        <Button variant={"outlined"} onClick={handleOpenAdd} disabled={!current}>
             new attribute
         </Button>
     </>
