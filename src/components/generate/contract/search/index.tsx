@@ -1,12 +1,24 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {Box, Button, Card, Stack, TextField, Typography, IconButton,Accordion,AccordionSummary,AccordionDetails} from "@mui/material";
+import {
+    Box,
+    Button,
+    Card,
+    Stack,
+    TextField,
+    Typography,
+    IconButton,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails
+} from "@mui/material";
 import {useForm} from "react-hook-form";
 import Provider from "@/instance/provider";
 import {message} from "@/lib/util";
 import {useWallet} from "@/context/wallet";
 import {CONTRACT_ADDRESS} from "@/constant/contract";
 import {GetErc721, GetErc721Factory} from "@/contract";
-import {Refresh,ExpandMore} from "@mui/icons-material"
+import {Refresh, ExpandMore} from "@mui/icons-material"
+import {useSyncContract} from "@/http/contract";
 
 export interface ISearchContract {
     index: string,
@@ -23,13 +35,14 @@ export const Search: React.FC = () => {
         formState: {errors},
         reset
     } = useForm<ISearchContract>({defaultValues: defaultParam});
+    const [sync] = useSyncContract();
     const [wallet] = useWallet()
-    const {chainId} = wallet
+    const {chainId, url, address} = wallet
     const [erc721Address, setErc721Address] = useState("");
     const [erc721name, setErc721Name] = useState("");
     const [erc721Symbol, setErc721Symbol] = useState("");
     const [erc721Owner, setErc721Owner] = useState("");
-    const [total,setTotal] = useState("");
+    const [total, setTotal] = useState("");
     const handleSearch = useCallback(async (data: ISearchContract) => {
         const provider = await Provider.getInstance();
         if (!provider || !chainId) {
@@ -48,7 +61,7 @@ export const Search: React.FC = () => {
                 setErc721Name("")
                 setErc721Symbol("")
                 setErc721Owner("")
-            }catch (e) {
+            } catch (e) {
                 message.error("合约不存在")
             }
 
@@ -84,10 +97,10 @@ export const Search: React.FC = () => {
             setErc721Owner(owner)
         }
     }, [erc721Address])
-    const getTotal = useCallback(async ()=>{
+    const getTotal = useCallback(async () => {
 
         const provider = await Provider.getInstance();
-        if(!provider||!chainId){
+        if (!provider || !chainId) {
             return
         }
         const contractAddress = CONTRACT_ADDRESS[chainId]
@@ -99,18 +112,35 @@ export const Search: React.FC = () => {
             try {
                 const total = await erc721Factory.allErc721Length()
                 setTotal(total.toString())
-            }catch (e) {
+            } catch (e) {
                 message.error("合约不存在")
             }
 
         }
-    },[chainId])
-    useEffect(()=>{
+    }, [chainId])
+    useEffect(() => {
         getTotal().then()
-    },[getTotal])
-    const handleSync = useCallback(()=>{
+    }, [getTotal])
+    const handleSync = useCallback(async () => {
+        if(url&&erc721Address&&typeof chainId =="number"){
+            const erc721 = await GetErc721(erc721Address)
+            if (erc721) {
+                const name = await erc721.name()
+                const res = await sync({
+                    name: name,
+                    chainId,
+                    address: erc721Address
+                })
+                if(res&&res.code<300){
 
-    },[])
+                    message.success("sync success")
+                }else{
+                    message.error(res.data)
+                }
+            }
+        }
+
+    }, [chainId, erc721Address, sync, url])
     return <Box>
         <Typography variant={'h4'} fontWeight={"bold"}>Search</Typography>
         <Stack direction={"row"} alignItems={"center"} spacing={1}>
@@ -124,9 +154,9 @@ export const Search: React.FC = () => {
             <Button variant={"contained"} onClick={handleSubmit(handleSearch)}>search</Button>
         </Stack>
         <Box paddingLeft={1} paddingRight={1}>
-            <Accordion elevation={0} variant={"outlined"} disableGutters={true} sx={{width:466}}>
+            <Accordion elevation={0} variant={"outlined"} disableGutters={true} sx={{width: 466}}>
                 <AccordionSummary
-                    expandIcon={<ExpandMore />}
+                    expandIcon={<ExpandMore/>}
                 >
                     <Typography>{erc721Address}</Typography>
                 </AccordionSummary>
@@ -173,7 +203,7 @@ export const Search: React.FC = () => {
                             </IconButton>
                         </Box>
                         <Box>
-                            <Button variant={"outlined"} size={"small"}>sync</Button>
+                            <Button variant={"outlined"} size={"small"} onClick={handleSync}>sync</Button>
                         </Box>
                     </Stack>
                 </AccordionDetails>

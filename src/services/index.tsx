@@ -132,3 +132,20 @@ export const delTrait = async (id:number)=>{
     const json = await res.json()
     return json;
 }
+
+export interface IContractSync {chainId:number,address:string,name:string}
+
+export const contractSync = async (params:IContractSync)=>{
+    const url = `${server}/contract/sync`
+    const res =  await fetch(url,{
+        method:'POST',
+        body:JSON.stringify(params)
+    })
+    if( res.status>=300){
+        message.error('请求错误')
+        return
+    }
+
+    const json = await res.json()
+    return json;
+}

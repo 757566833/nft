@@ -28,7 +28,7 @@ export class notification {
     static loop: HTMLDivElement[] = []
     static body = globalThis?.document?.body || {};
     static modeId = 'colorScheme'
-    static modeAttr = 'colorScheme'
+    static modeAttr = 'content'
 
 
     /**
@@ -51,7 +51,7 @@ export class notification {
         insertCss();
         const env = Env.getEnv();
         if (env == EEnv.client) {
-          const mask = notification.createMask(document);
+            const mask = notification.createMask(document);
             const dom = notification.createDom(document, params);
             notification.addDom(mask,dom);
 
@@ -63,7 +63,7 @@ export class notification {
 
     static createMask: (document: Document) => HTMLDivElement = (document) => {
         // if(document.getElementById(''))
-            const _dom = document.getElementById('self-lib-notification') as HTMLDivElement
+        const _dom = document.getElementById('self-lib-notification') as HTMLDivElement
         if(_dom){
             return _dom
         }

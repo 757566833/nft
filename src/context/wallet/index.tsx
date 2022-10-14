@@ -44,13 +44,15 @@ export const WalletProvider: React.FC<PropsWithChildren<unknown>> = (props) => {
         const {baseFeePerGas} = latest
         dispatch({
             type:'change',
-            value:{address,chainId:chainId,url:provider.connection?.url,isEIP1559:baseFeePerGas?true:false}
+            value:{address,chainId:chainId,url:provider.network?.name,isEIP1559:baseFeePerGas?true:false}
         })
     },[])
     const initData = useCallback(async ()=>{
+
         const isLink = await Provider.isLinked();
+
         if(isLink){
-            const provider = await Provider.getInstance();
+            const provider = await Provider.getInstance() as ethers.providers.Web3Provider;
             if(provider){
                 const signer = provider.getSigner();
                 let address
@@ -63,7 +65,7 @@ export const WalletProvider: React.FC<PropsWithChildren<unknown>> = (props) => {
                 const {baseFeePerGas} = latest
                 dispatch({
                     type:'change',
-                    value:{address,chainId:chainId,url:provider.connection?.url,isEIP1559:baseFeePerGas?true:false}
+                    value:{address,chainId:chainId,url:provider.network?.name,isEIP1559:baseFeePerGas?true:false}
                 })
             }
 
@@ -74,6 +76,7 @@ export const WalletProvider: React.FC<PropsWithChildren<unknown>> = (props) => {
         /**
          * 同key 替换，所以不需要清除
          */
+
         Provider.subscribers(CHAIN_CHANGED,"context",handleChange)
         Provider.subscribers(ACCOUNTS_CHANGED,"context",handleChange);
         initData().then()
@@ -90,6 +93,7 @@ export const WalletProvider: React.FC<PropsWithChildren<unknown>> = (props) => {
         })
     },[])
     useMount(()=>{
+
      init().then();
     })
     return <WalletContext.Provider value={value}>{props.children}</WalletContext.Provider>;

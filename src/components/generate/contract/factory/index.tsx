@@ -2,7 +2,7 @@ import React, {useCallback} from "react";
 import {Box, Button, Card, Stack, TextField, Typography} from "@mui/material";
 import {useForm} from "react-hook-form";
 import Provider from "@/instance/provider";
-import {message} from "@/lib/util";
+import {message, notification} from "@/lib/util";
 import {useWallet} from "@/context/wallet";
 import {CONTRACT_ADDRESS} from "@/constant/contract";
 import {GetErc721Factory} from "@/contract";
@@ -38,7 +38,16 @@ export const General:React.FC = ()=>{
                 isEIP1559,
                 gasLimit:gas,
             })
-            await erc721Factory.createErc721(data.name,data.symbol,fee)
+            try {
+                await erc721Factory.createErc721(data.name,data.symbol,fee)
+                notification.open({
+                   message:'Transaction initiated',
+                    description:'After the transaction is successful, please refresh the total, query the contract by index, and click the sync button to synchronize to the centralized database for associating nft'
+                })
+            }catch (e:any) {
+                message.error(e.message)
+            }
+
         }
     },[chainId, isEIP1559])
     return <Box>
