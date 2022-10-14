@@ -3,8 +3,16 @@ import {addAttribute, editAttribute, getAttribute, getAttributes, IAttributeRequ
 import {useCallback} from "react";
 
 export const ATTRIBUTES = 'attributes'
-export const useAttributes = ()=>{
-    const {data,error,isValidating,mutate} = useSWR(ATTRIBUTES,getAttributes)
+export const useAttributes = (contract?:string)=>{
+    const get = useCallback(async ()=>{
+        if(contract){
+            return await getAttributes(contract)
+        }else{
+            return  []
+        }
+
+    },[contract])
+    const {data,error,isValidating,mutate} = useSWR(`${ATTRIBUTES}${contract}`,get)
 
     return {data,error,isValidating,mutate}
 }
@@ -19,7 +27,7 @@ export const useAddAttribute = ()=>{
    const add = useCallback(async (params:Omit<IAttributeRequest, 'id'>)=>{
        const res = await addAttribute(params);
        if(res){
-           await mutate(ATTRIBUTES)
+           await mutate(`${ATTRIBUTES}${params.contract}`)
            return res
        }
    },[mutate])
@@ -32,7 +40,7 @@ export const useEditAttribute = ()=>{
     const add = useCallback(async (params:IAttributeRequest)=>{
         const res = await editAttribute(params);
         if(res){
-            await mutate(ATTRIBUTES)
+            await mutate(`${ATTRIBUTES}${params.contract}`)
             return res
         }
     },[mutate])

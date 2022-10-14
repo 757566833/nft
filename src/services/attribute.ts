@@ -21,8 +21,8 @@ export const getAttribute = async (id:number)=>{
     return json.data;
 }
 
-export const getAttributes = async ()=>{
-    const url = `${server}/attributes/list`
+export const getAttributes = async (contract:string)=>{
+    const url = `${server}/attributes/list/${contract}`
     const res =  await fetch(url)
     if( res.status>=300){
         message.error('请求错误')
@@ -39,6 +39,7 @@ export interface IAttributeRequest{
     id:number
     name:string,
     zIndex:number
+    contract:string
 }
 
 export const addAttribute = async (params:Omit<IAttributeRequest, 'id'>)=>{

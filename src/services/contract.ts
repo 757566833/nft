@@ -19,7 +19,6 @@ export const contractSync = async (params:IContractSync)=>{
     return json;
 }
 export interface IContract {
-    id:string
     address:string,
     name:string
     chainId:number

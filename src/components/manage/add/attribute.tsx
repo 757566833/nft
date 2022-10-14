@@ -32,7 +32,7 @@ const AddAttribute: React.FC<{ onFinish: () => void }> = (props) => {
         if (typeof chainId == "number") {
             return currentContract[chainId]
         }
-        return
+        return null
     }, [chainId, currentContract])
     const handleOpenAdd = useCallback(() => {
         setAddVisible(true)
@@ -41,15 +41,19 @@ const AddAttribute: React.FC<{ onFinish: () => void }> = (props) => {
         setAddVisible(false)
     }, [])
     const handleAdd = useCallback(async (data: add) => {
-        const res = await addAttribute({
-            ...data,
-            zIndex: Number.parseInt(`${data.zIndex}`)
-        })
-        setAddVisible(false)
-        if (res) {
-            onFinish()
+        if(current){
+            const res = await addAttribute({
+                ...data,
+                zIndex: Number.parseInt(`${data.zIndex}`),
+                contract:current.address
+            })
+            setAddVisible(false)
+            if (res) {
+                onFinish()
+            }
         }
-    }, [addAttribute, onFinish])
+
+    }, [addAttribute, current, onFinish])
     useEffect(() => {
         if (!addVisible) {
             reset()

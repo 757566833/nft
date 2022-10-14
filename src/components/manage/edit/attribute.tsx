@@ -1,8 +1,14 @@
-import React, {useCallback, useEffect} from "react";
+import React, {useCallback, useEffect, useMemo} from "react";
 import {Stack, TextField} from "@mui/material";
 import {Modal} from "@/lib/react-component";
 import { useForm } from "react-hook-form";
 import {useAttribute, useEditAttribute} from "@/http/attribute";
+import {useWallet} from "@/context/wallet";
+import {IContract} from "@/services/contract";
+import {CURRENT_CONTRACT} from "@/constant";
+import {LocalStorage} from "@/lib/react-context";
+const {useLocalStorage} = LocalStorage
+
 interface add{
     name:string,
     zIndex:number
@@ -16,6 +22,15 @@ const EditAttribute:React.FC<{id?:number,onFinish:()=>void,visible:boolean,onCan
     const [editAttribute] = useEditAttribute()
     const { register, handleSubmit, watch, formState: { errors },reset,setValue } = useForm<add>({defaultValues:defaultParam});
     const [getAttribute] = useAttribute()
+    const [wallet] = useWallet()
+    const {chainId} = wallet
+    const [currentContract] = useLocalStorage<Record<number, IContract | null>>(CURRENT_CONTRACT, {})
+    const current = useMemo(() => {
+        if (typeof chainId == "number") {
+            return currentContract[chainId]
+        }
+        return null
+    }, [chainId, currentContract])
     const getData = useCallback(async (id:number)=>{
         const res = await getAttribute(id)
         if(res){
@@ -24,18 +39,19 @@ const EditAttribute:React.FC<{id?:number,onFinish:()=>void,visible:boolean,onCan
         }
     },[getAttribute, setValue])
     const handleEdit = useCallback(async (data:add)=>{
-        if(id){
+        if(id&&current){
             const res = await editAttribute({
                 ...data,
                 zIndex:Number.parseInt(`${data.zIndex}`),
-                id
+                id,
+                contract:current.address
             })
             if(res){
                 onFinish()
             }
         }
 
-    },[editAttribute, id, onFinish])
+    },[current, editAttribute, id, onFinish])
     useEffect(()=>{
         if(id){
             getData(id).then()
