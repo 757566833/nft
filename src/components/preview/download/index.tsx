@@ -78,7 +78,7 @@ export const Download: React.FC = () => {
             </Box>
         </Modal>
         <Box hidden={preview.length==0}>
-            <Button variant={'contained'} onClick={handleDownload}>download</Button>
+            <Button variant={'contained'} fullWidth={true} onClick={handleDownload}>download</Button>
         </Box>
 
     </>

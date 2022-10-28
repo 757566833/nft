@@ -26,9 +26,8 @@ export const sum = (arr: (number | null)[]) => {
     }
     return sum
 }
-const total = 100;
 
-export const func: (source: AttributesRefValue) => PreviewList = (source) => {
+export const func: (source: AttributesRefValue,count:number) => PreviewList = (source,count) => {
     const result: PreviewList = []
     for (const sourceElement of source) {
         const traits = sourceElement.traits || []
@@ -44,11 +43,11 @@ export const func: (source: AttributesRefValue) => PreviewList = (source) => {
             }
 
         }
-        while (currentArray.length < total) {
+        while (currentArray.length < count) {
             currentArray = [...currentArray, ...currentArray]
         }
         shuffle(currentArray)
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < count; i++) {
             if (result[i]) {
                 result[i].push({
                     ...currentArray[i],

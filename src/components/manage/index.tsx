@@ -10,7 +10,7 @@ import {usePreview} from "@/context/preview";
 import {message} from "@/lib/util";
 import {useWallet} from "@/context/wallet";
 import {IContract} from "@/services/contract";
-import {CURRENT_CONTRACT} from "@/constant";
+import {CURRENT_CONTRACT, PREVIEW_COUNT} from "@/constant";
 import {LocalStorage} from "@/lib/react-context";
 
 const {useLocalStorage} = LocalStorage
@@ -27,24 +27,27 @@ const Manage: React.FC = () => {
     const {data, error, isValidating, mutate} = useAttributes(current?.address)
     const attributesRef = useRef<AttributesRef>(null);
     const [,setPreview] = usePreview()
-
+    const [count] = useLocalStorage<string>(PREVIEW_COUNT,"100")
 
     const handlePreview = useCallback(()=>{
-        const value = attributesRef.current?.getValue()
+        message.info("generating")
+        setTimeout(()=>{
+            const value = attributesRef.current?.getValue()
 
-        if(value){
-            for (const valueElement of value) {
-                const length  = valueElement.traits?.map(item=>item.value).filter(item=>item).length
-                if(length==0){
-                    message.error(`${valueElement.name} must has value`)
-                    return
+            if(value){
+                for (const valueElement of value) {
+                    const length  = valueElement.traits?.map(item=>item.value).filter(item=>item).length
+                    if(length==0){
+                        message.error(`${valueElement.name} must has value`)
+                        return
+                    }
                 }
+                const list = func(value,Number.parseInt(count))
+                setPreview(list)
             }
-            const list = func(value)
-            setPreview(list)
-        }
+        },280)
 
-    },[setPreview])
+    },[count, setPreview])
     return <TraitProvider>
         <AddTrait />
         <Box marginTop={2}>

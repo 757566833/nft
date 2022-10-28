@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from "react";
+import React, {useCallback, useEffect, useMemo} from "react";
 import {Box, Typography} from "@mui/material";
 import {PreviewItem, usePreview} from "@/context/preview";
 import {useFilterValue} from "@/components/preview/context/filter";
@@ -6,11 +6,25 @@ import {intersection} from "@/utils";
 import {useCountValue} from "@/components/preview/context/count";
 import Edit from "@/components/preview/edit";
 import {useEdit} from "@/components/preview/context/edit";
+import {IContract} from "@/services/contract";
+import {CURRENT_CONTRACT} from "@/constant";
+import {LocalStorage} from "@/lib/react-context";
+import {useWallet} from "@/context/wallet";
+const {useLocalStorage} = LocalStorage
 
 export const List: React.FC = () => {
     const [preview] = usePreview();
+    const [wallet] = useWallet()
+    const {chainId} = wallet
     const [filterValue] = useFilterValue();
     const [, setCountValue] = useCountValue()
+    const [currentContract] = useLocalStorage<Record<number, IContract | null>>(CURRENT_CONTRACT, {})
+    const current = useMemo(() => {
+        if (typeof chainId == "number") {
+            return currentContract[chainId]
+        }
+        return
+    }, [chainId, currentContract])
     useEffect(() => {
         const map: Record<number, number> = {}
         for (let i = 0; i < preview.length; i++) {
@@ -64,7 +78,7 @@ export const List: React.FC = () => {
                     })}
                 </Box>
                 <Box paddingLeft={2} paddingTop={1} paddingBottom={1} paddingRight={2}>
-                    <Typography lineHeight={2}>demo {index}</Typography>
+                    <Typography lineHeight={2}>{current?.name} {index}</Typography>
                 </Box>
             </Box>
         })}
