@@ -26,3 +26,7 @@ img {
   max-width: 100%;
   display: block;
 }
+
+.MuiDataGrid-root .MuiDataGrid-columnHeader:focus {
+  outline: none !important;
+}

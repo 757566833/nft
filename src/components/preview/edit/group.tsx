@@ -1,14 +1,29 @@
-import React from "react";
+import React, {useMemo} from "react";
 import {useAttributes} from "@/http/attribute";
 import {Accordion, AccordionDetails, AccordionSummary, Box, Typography} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Item from "@/components/preview/edit/item";
 import {PreviewItem} from "@/context/preview";
-import {ITrait} from "@/services";
+import {ITrait} from "@/services/trait";
+import {IContract} from "@/services/contract";
+import {CURRENT_CONTRACT} from "@/constant";
+import {useWallet} from "@/context/wallet";
+import {LocalStorage} from "@/lib/react-context";
+
+const {useLocalStorage} = LocalStorage
 
 export const Group:React.FC<{preview:PreviewItem,onChange:(attributeId:number,item:ITrait)=>void}> = (props)=>{
     const {preview,onChange} = props
-    const {data, error, isValidating, mutate} = useAttributes()
+    const [wallet] = useWallet()
+    const {chainId} = wallet
+    const [currentContract] = useLocalStorage<Record<number, IContract | null>>(CURRENT_CONTRACT, {})
+    const current = useMemo(() => {
+        if (typeof chainId == "number") {
+            return currentContract[chainId]
+        }
+        return
+    }, [chainId, currentContract])
+    const {data, error, isValidating, mutate} = useAttributes(current?.address)
     return <Box border={"1px solid #dde3e7"}>
 
         {data?.filter((item)=>item.id).map((item)=>{

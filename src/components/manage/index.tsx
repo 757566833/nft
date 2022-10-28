@@ -15,9 +15,6 @@ import {LocalStorage} from "@/lib/react-context";
 
 const {useLocalStorage} = LocalStorage
 const Manage: React.FC = () => {
-    const {data, error, isValidating, mutate} = useAttributes()
-    const attributesRef = useRef<AttributesRef>(null);
-    const [,setPreview] = usePreview()
     const [wallet] = useWallet()
     const {chainId} = wallet
     const [currentContract] = useLocalStorage<Record<number, IContract | null>>(CURRENT_CONTRACT, {})
@@ -27,6 +24,11 @@ const Manage: React.FC = () => {
         }
         return
     }, [chainId, currentContract])
+    const {data, error, isValidating, mutate} = useAttributes(current?.address)
+    const attributesRef = useRef<AttributesRef>(null);
+    const [,setPreview] = usePreview()
+
+
     const handlePreview = useCallback(()=>{
         const value = attributesRef.current?.getValue()
 

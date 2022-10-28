@@ -6,9 +6,9 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import {Action} from "@/components/header/action";
 import {IContract} from "@/services/contract";
-import {LocalStorage} from "@/lib/react-context";
 import {CURRENT_CONTRACT} from "@/constant";
 import {useWallet} from "@/context/wallet";
+import {LocalStorage} from "@/lib/react-context";
 const {useLocalStorage} = LocalStorage
 
 const Header:React.FC<{value:string,onChange:(value: string)=>void}> = (props)=>{

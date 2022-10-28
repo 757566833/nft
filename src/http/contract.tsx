@@ -1,6 +1,6 @@
 
 import {useCallback} from "react";
-import {contractSync, getContracts, IContract, IContractSync} from "@/services/contract";
+import {contractSync, getContracts, getContractsByChainId, IContract, IContractSync} from "@/services/contract";
 import useSWR from "swr";
 import {IResponse} from "@/services";
 
@@ -8,9 +8,9 @@ export const CONTRACT = 'contract'
 export const useContracts = (chainId?:number)=>{
     const get = useCallback(async ()=>{
         if(typeof chainId =="number"){
-            return await getContracts(chainId)
+            return await getContractsByChainId(chainId)
         }else{
-            return [] as IContract[]
+            return await getContracts()
         }
 
     },[chainId]);

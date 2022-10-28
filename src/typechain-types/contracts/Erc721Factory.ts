@@ -30,30 +30,16 @@ import type {
 export interface Erc721FactoryInterface extends utils.Interface {
   functions: {
     "allErc721(uint256)": FunctionFragment;
-    "allErc721Length()": FunctionFragment;
-    "countMap(address)": FunctionFragment;
     "createErc721(string,string)": FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic:
-      | "allErc721"
-      | "allErc721Length"
-      | "countMap"
-      | "createErc721"
+    nameOrSignatureOrTopic: "allErc721" | "createErc721"
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "allErc721",
     values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "allErc721Length",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "countMap",
-    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "createErc721",
@@ -62,32 +48,24 @@ export interface Erc721FactoryInterface extends utils.Interface {
 
   decodeFunctionResult(functionFragment: "allErc721", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "allErc721Length",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "countMap", data: BytesLike): Result;
-  decodeFunctionResult(
     functionFragment: "createErc721",
     data: BytesLike
   ): Result;
 
   events: {
-    "Erc721Created(address,uint256)": EventFragment;
+    "Created(address,address)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "Erc721Created"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Created"): EventFragment;
 }
 
-export interface Erc721CreatedEventObject {
+export interface CreatedEventObject {
+  sender: string;
   erc721: string;
-  arg1: BigNumber;
 }
-export type Erc721CreatedEvent = TypedEvent<
-  [string, BigNumber],
-  Erc721CreatedEventObject
->;
+export type CreatedEvent = TypedEvent<[string, string], CreatedEventObject>;
 
-export type Erc721CreatedEventFilter = TypedEventFilter<Erc721CreatedEvent>;
+export type CreatedEventFilter = TypedEventFilter<CreatedEvent>;
 
 export interface Erc721Factory extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -121,13 +99,6 @@ export interface Erc721Factory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    allErc721Length(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    countMap(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     createErc721(
       name: PromiseOrValue<string>,
       symbol: PromiseOrValue<string>,
@@ -139,13 +110,6 @@ export interface Erc721Factory extends BaseContract {
     arg0: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<string>;
-
-  allErc721Length(overrides?: CallOverrides): Promise<BigNumber>;
-
-  countMap(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   createErc721(
     name: PromiseOrValue<string>,
@@ -159,13 +123,6 @@ export interface Erc721Factory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    allErc721Length(overrides?: CallOverrides): Promise<BigNumber>;
-
-    countMap(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     createErc721(
       name: PromiseOrValue<string>,
       symbol: PromiseOrValue<string>,
@@ -174,23 +131,19 @@ export interface Erc721Factory extends BaseContract {
   };
 
   filters: {
-    "Erc721Created(address,uint256)"(
-      erc721?: null,
-      arg1?: null
-    ): Erc721CreatedEventFilter;
-    Erc721Created(erc721?: null, arg1?: null): Erc721CreatedEventFilter;
+    "Created(address,address)"(
+      sender?: PromiseOrValue<string> | null,
+      erc721?: PromiseOrValue<string> | null
+    ): CreatedEventFilter;
+    Created(
+      sender?: PromiseOrValue<string> | null,
+      erc721?: PromiseOrValue<string> | null
+    ): CreatedEventFilter;
   };
 
   estimateGas: {
     allErc721(
       arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    allErc721Length(overrides?: CallOverrides): Promise<BigNumber>;
-
-    countMap(
-      arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -204,13 +157,6 @@ export interface Erc721Factory extends BaseContract {
   populateTransaction: {
     allErc721(
       arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    allErc721Length(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    countMap(
-      arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

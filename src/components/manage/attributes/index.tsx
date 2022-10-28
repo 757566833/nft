@@ -2,6 +2,7 @@ import React, {ForwardRefRenderFunction, Key, useCallback, useImperativeHandle, 
 import {Box, Menu, MenuItem, Stack, Typography} from "@mui/material";
 import {Dropdown} from "@/lib/react-component";
 import ControlPointOutlinedIcon from "@mui/icons-material/ControlPointOutlined";
+import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -21,10 +22,18 @@ const Attributes: React.ForwardRefRenderFunction<AttributesRef,AttributesProps> 
         setAddTraitState({
             addVisible: true,
             addAttribute: name,
-            addAttributeId: id
+            addAttributeId: id,
+            type:"single",
         })
     }, [setAddTraitState])
-
+    const handleBatch = useCallback((id: number, name: string) => {
+        setAddTraitState({
+            addVisible: true,
+            addAttribute: name,
+            addAttributeId: id,
+            type:"batch",
+        })
+    }, [setAddTraitState])
     const traitsRef = useRef<(TraitsRef|null)[]>([])
 
     const render = useCallback((item: IAttribute,index:number) => {
@@ -37,12 +46,20 @@ const Attributes: React.ForwardRefRenderFunction<AttributesRef,AttributesProps> 
                     setEditId(item.id)
                     setEditVisible(true)
                     break
+                case "batch":
+                    handleBatch(item.id, item.name)
+                    break
             }
         }
         return <Box key={item.id} padding={2}>
             <Stack direction={"row"} spacing={1} alignItems={"center"}>
                 <Typography variant={"h5"} fontWeight={'500'}>{item.name}</Typography>
                 <Dropdown onClick={handleClick} overlay={<Menu open={true}>
+                    <MenuItem key={'batch'} data-name={item.name} data-id={item.id}>
+                        <Stack direction={"row"} spacing={1}>
+                            <FolderOpenOutlinedIcon/> <Typography>Add traits</Typography>
+                        </Stack>
+                    </MenuItem>
                     <MenuItem key={'add'} data-name={item.name} data-id={item.id}>
                         <Stack direction={"row"} spacing={1}>
                             <ControlPointOutlinedIcon/> <Typography>Add traits</Typography>
@@ -61,7 +78,7 @@ const Attributes: React.ForwardRefRenderFunction<AttributesRef,AttributesProps> 
                         </Stack>
                     </MenuItem>
                 </Menu>}>
-                    <MoreHorizIcon/>
+                    <Typography><MoreHorizIcon/></Typography>
                 </Dropdown>
                 <Typography variant={"body1"} color={'#5e727f'}>{item.count} traits</Typography>
             </Stack>
@@ -69,7 +86,7 @@ const Attributes: React.ForwardRefRenderFunction<AttributesRef,AttributesProps> 
                 <Traits ref={e=>traitsRef.current[index] = e} attributeId={item.id} total={item.count}/>
             </Box>
         </Box>
-    }, [handleAdd])
+    }, [handleAdd, handleBatch])
     const handleEditFinish = useCallback(() => {
         setEditId(undefined)
         setEditVisible(false)

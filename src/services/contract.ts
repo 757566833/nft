@@ -18,13 +18,20 @@ export const contractSync = async (params:IContractSync)=>{
     const json = await res.json()
     return json;
 }
-export interface IContract {
-    address:string,
-    name:string
-    chainId:number
-}
-export const getContracts= async (chainId:number)=>{
+export interface IContract {address:string,name:string,symbol:string,chainId:string,owner:string}
+export const getContractsByChainId= async (chainId:number)=>{
     const url = `${server}/contract/list/${chainId}`
+    const res =  await fetch(url)
+    if( res.status>=300){
+        message.error('请求错误')
+        return
+    }
+
+    const json = await res.json() as IResponse<IContract[]>
+    return json.data;
+}
+export const getContracts= async ()=>{
+    const url = `${server}/contract/list`
     const res =  await fetch(url)
     if( res.status>=300){
         message.error('请求错误')

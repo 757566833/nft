@@ -1,13 +1,27 @@
-import React, {useState} from "react";
+import React, {useMemo, useState} from "react";
 import {Accordion, AccordionDetails, AccordionSummary, Box, Typography} from "@mui/material";
 import {useAttributes} from "@/http/attribute";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CheckboxGroup from "@/components/preview/filter/checkboxGroup";
 import {usePreview} from "@/context/preview";
+import {useWallet} from "@/context/wallet";
+import {IContract} from "@/services/contract";
+import {CURRENT_CONTRACT} from "@/constant";
+import {LocalStorage} from "@/lib/react-context";
 
+const {useLocalStorage} = LocalStorage
 
 export const Filter:React.FC = ()=>{
-    const {data, error, isValidating, mutate} = useAttributes()
+    const [wallet] = useWallet()
+    const {chainId} = wallet
+    const [currentContract] = useLocalStorage<Record<number, IContract | null>>(CURRENT_CONTRACT, {})
+    const current = useMemo(() => {
+        if (typeof chainId == "number") {
+            return currentContract[chainId]
+        }
+        return
+    }, [chainId, currentContract])
+    const {data, error, isValidating, mutate} = useAttributes(current?.address)
     const [preview] = usePreview();
     return <Box border={"1px solid #dde3e7"} hidden={preview.length==0}>
 

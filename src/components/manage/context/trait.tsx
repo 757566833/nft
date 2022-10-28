@@ -3,6 +3,7 @@ type  IState = {
     addVisible:boolean,
     addAttribute?:string,
     addAttributeId?:number
+    type?:'single'|'batch'
 }
 type IAction = {
     type: 'change',
