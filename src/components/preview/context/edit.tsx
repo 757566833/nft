@@ -29,7 +29,7 @@ export const EditContext = React.createContext<{state:IState, dispatch: React.Di
         //
     },
 });
-export const EditProvider :React.FC<PropsWithChildren<unknown>> = (props) => {
+export const EditProvider :React.FC<PropsWithChildren> = (props) => {
     const {children} = props;
     const [state, dispatch] = React.useReducer(editReducer, editDefaultValue);
     const edit = React.useMemo(()=>({

@@ -1,6 +1,6 @@
 import React, {useCallback, useRef, useState} from "react";
 import {Box, Button, Stack, Typography,CircularProgress} from "@mui/material";
-import {generateImage} from "@/utils";
+import {downloadURL, generateImage} from "@/utils";
 import {usePreview} from "@/context/preview";
 import {Modal} from "@/lib/react-component";
 
@@ -11,8 +11,13 @@ export const Download: React.FC = () => {
     const handleStart = useCallback(()=>{
         let index=0;
         const _timer = setInterval(()=>{
+            let _index = index
             if(preview[index]){
-                generateImage(preview[index].map(item=>`${process.env.NEXT_PUBLIC_FILE}${item.url}`),`demo${index}.png`)
+                generateImage(preview[index].map(item=>`${process.env.NEXT_PUBLIC_FILE}${item.url}`)).then(res=>{
+                    if(res){
+                        downloadURL(res,`demo${_index}.png`)
+                    }
+                })
                 index++
             }else {
                 clearInterval(timer)

@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from "react";
+import React, {useMemo} from "react";
 import {Accordion, AccordionDetails, AccordionSummary, Box, Typography} from "@mui/material";
 import {useAttributes} from "@/http/attribute";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -21,7 +21,7 @@ export const Filter:React.FC = ()=>{
         }
         return
     }, [chainId, currentContract])
-    const {data, error, isValidating, mutate} = useAttributes(current?.address)
+    const {data} = useAttributes(current?.address)
     const [preview] = usePreview();
     return <Box border={"1px solid #dde3e7"} hidden={preview.length==0}>
 

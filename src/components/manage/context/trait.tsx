@@ -1,4 +1,4 @@
-import React, {PropsWithChildren, useCallback, useEffect} from "react";
+import React, {PropsWithChildren, useCallback} from "react";
 type  IState = {
     addVisible:boolean,
     addAttribute?:string,
@@ -26,7 +26,7 @@ export const TraitContext = React.createContext<{state:IState, dispatch: React.D
         //
     },
 });
-export const TraitProvider :React.FC<PropsWithChildren<unknown>> = (props) => {
+export const TraitProvider :React.FC<PropsWithChildren> = (props) => {
     const {children} = props;
     const [state, dispatch] = React.useReducer(traitReducer, traitDefaultValue);
     const value = React.useMemo(()=>({

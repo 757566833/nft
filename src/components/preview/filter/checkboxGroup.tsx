@@ -6,7 +6,7 @@ import {useCountValue} from "@/components/preview/context/count";
 
 export const CheckboxGroup:React.FC<{attributeId: number}> = (props)=>{
     const {attributeId} = props;
-    const {data, error, isValidating, mutate} = useTraits(attributeId)
+    const {data} = useTraits(attributeId)
     const [filterValue,setFilterValue] = useFilterValue()
     const [countValue] = useCountValue();
     const handleChange= useCallback((id:number,checked:boolean)=>{

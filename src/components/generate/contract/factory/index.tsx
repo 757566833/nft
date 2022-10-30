@@ -1,8 +1,8 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {Box, Button, Card, Stack, TextField, Typography} from "@mui/material";
+import React, {useCallback, useState} from "react";
+import {Box, Button, Stack, TextField, Typography} from "@mui/material";
 import {useForm} from "react-hook-form";
 import Provider from "@/instance/provider";
-import {message, notification} from "@/lib/util";
+import {message} from "@/lib/util";
 import {useWallet} from "@/context/wallet";
 import {CONTRACT_ADDRESS} from "@/constant/contract";
 import {GetErc721Factory} from "@/contract";
@@ -18,7 +18,7 @@ const defaultParam :ICreateContract = {
     symbol:""
 }
 export const General:React.FC = ()=>{
-    const { register, handleSubmit, watch, formState: { errors },reset } = useForm<ICreateContract>({defaultValues:defaultParam});
+    const { register, handleSubmit } = useForm<ICreateContract>({defaultValues:defaultParam});
     const [wallet] = useWallet()
     const {chainId,isEIP1559} = wallet
     const handleCreate = useCallback(async (data:ICreateContract)=>{

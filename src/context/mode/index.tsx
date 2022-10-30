@@ -19,7 +19,7 @@ export const ModeContext = React.createContext<{state:IState, dispatch: React.Di
         //
     },
 });
-export const ModeProvider :React.FC<PropsWithChildren<unknown>> = (props) => {
+export const ModeProvider :React.FC<PropsWithChildren> = (props) => {
     const {children} = props;
     const [state, dispatch] = React.useReducer(modeReducer, modeDefaultValue);
     const value = React.useMemo(()=>({

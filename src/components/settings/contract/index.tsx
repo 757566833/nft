@@ -51,7 +51,7 @@ export const General:React.FC = ()=>{
     },[chainId, currentContract, options.length])
     return <Box>
         <Typography variant={'h4'} fontWeight={"bold"}>Contract</Typography>
-        <Typography variant={'body2'}>select contract in current chain</Typography>
+        <Typography variant={'body2'}>select contract where chainId is {chainId}</Typography>
         <Box marginTop={2} width={484}>
             <Autocomplete
 

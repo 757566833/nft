@@ -1,4 +1,4 @@
-import React, {PropsWithChildren, useCallback, useEffect} from "react";
+import React, {PropsWithChildren, useCallback} from "react";
 type IAction = {
     type: 'change',
     value: number[]
@@ -17,7 +17,7 @@ export const FilterContext = React.createContext<{state:number[], dispatch: Reac
         //
     },
 });
-export const FilterProvider :React.FC<PropsWithChildren<unknown>> = (props) => {
+export const FilterProvider :React.FC<PropsWithChildren> = (props) => {
     const {children} = props;
     const [state, dispatch] = React.useReducer(filterReducer, filterDefaultFilter);
     const filter = React.useMemo(()=>({

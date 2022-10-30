@@ -233,8 +233,10 @@ export const guessPrice = async (provider:ethers.providers.JsonRpcProvider,level
             break;
         case "medium":
             result = bn.mul(120).div(100)
+            break
         case "high":
             result = bn.mul(130).div(100)
+            break
     }
     return result
 }

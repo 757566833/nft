@@ -17,7 +17,7 @@ export const CountContext = React.createContext<{state:Record<number, number>, d
         //
     },
 });
-export const CountProvider :React.FC<PropsWithChildren<unknown>> = (props) => {
+export const CountProvider :React.FC<PropsWithChildren> = (props) => {
     const {children} = props;
     const [state, dispatch] = React.useReducer(countReducer, countDefaultCount);
     const count = React.useMemo(()=>({

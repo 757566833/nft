@@ -1,5 +1,6 @@
 import {message} from "@/lib/util";
 import {IResponse, server} from "@/services/index";
+
 export interface IAttribute{
     id:number
     name:string,
@@ -53,8 +54,7 @@ export const addAttribute = async (params:Omit<IAttributeRequest, 'id'>)=>{
         return
     }
 
-    const json = await res.json()
-    return json;
+    return await res.json();
 }
 
 export const editAttribute = async (params:IAttributeRequest)=>{
@@ -68,6 +68,5 @@ export const editAttribute = async (params:IAttributeRequest)=>{
         return
     }
 
-    const json = await res.json()
-    return json;
+    return await res.json();
 }

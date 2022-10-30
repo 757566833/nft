@@ -30,7 +30,7 @@ export const WalletContext = React.createContext<{state:IState, dispatch: React.
     },
 });
 
-export const WalletProvider: React.FC<PropsWithChildren<unknown>> = (props) => {
+export const WalletProvider: React.FC<PropsWithChildren> = (props) => {
     const [state, dispatch] = React.useReducer(walletReducer, walletDefaultValue);
     const handleChange = useCallback(async (provider:ethers.providers.JsonRpcProvider)=>{
         const signer = provider.getSigner();
@@ -44,7 +44,7 @@ export const WalletProvider: React.FC<PropsWithChildren<unknown>> = (props) => {
         const {baseFeePerGas} = latest
         dispatch({
             type:'change',
-            value:{address,chainId:chainId,url:provider.network?.name,isEIP1559:baseFeePerGas?true:false}
+            value:{address,chainId:chainId,url:provider.network?.name,isEIP1559:!!baseFeePerGas}
         })
     },[])
     const initData = useCallback(async ()=>{
@@ -65,7 +65,7 @@ export const WalletProvider: React.FC<PropsWithChildren<unknown>> = (props) => {
                 const {baseFeePerGas} = latest
                 dispatch({
                     type:'change',
-                    value:{address,chainId:chainId,url:provider.network?.name,isEIP1559:baseFeePerGas?true:false}
+                    value:{address,chainId:chainId,url:provider.network?.name,isEIP1559:!!baseFeePerGas}
                 })
             }
 

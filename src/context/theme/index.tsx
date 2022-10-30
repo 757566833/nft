@@ -119,7 +119,7 @@ const block= {
      */
     A700: baseBlock,
 };
-const ThemeProvider:React.FC<PropsWithChildren<unknown>> = (props)=>{
+const ThemeProvider:React.FC<PropsWithChildren> = (props)=>{
     const {children} = props;
     const [mode] = useMode();
     const theme = React.useMemo(

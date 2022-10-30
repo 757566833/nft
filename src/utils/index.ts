@@ -1,5 +1,5 @@
 import {AttributesRefValue} from "@/components/manage/attributes";
-import {PreviewList} from "@/context/preview";
+import {PreviewItem, PreviewList} from "@/context/preview";
 
 /**
  * 引用传递，会改变传进来的数组
@@ -32,12 +32,14 @@ export const func: (source: AttributesRefValue,count:number) => PreviewList = (s
     for (const sourceElement of source) {
         const traits = sourceElement.traits || []
 
-        let currentArray: { attributeId: number, traitId: number, url: string }[] = [];
+        let currentArray:PreviewItem = [];
         for (const trait of traits) {
             if (trait.value) {
                 currentArray = [...currentArray, ...new Array(trait.value).fill({
                     attributeId: trait.attributeId,
+                    attributeName:trait.attributeName,
                     traitId: trait.traitId,
+                    traitName: trait.name,
                     url: trait.url
                 })]
             }
@@ -69,7 +71,7 @@ export const intersection: <T>(array1: T[], array2: T[]) => T[] = (array1, array
     return array1.filter(value => array2.includes(value));
 }
 
-export const generateImage = (images: string[],name:string) => {
+export const generateImage = async (images: string[])=> {
 
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -91,20 +93,20 @@ export const generateImage = (images: string[],name:string) => {
         }))
     }
     if (ctx) {
-        // 两张图片都加载完成后绘制于Canva中
-        let drawAllImg = Promise.all(loadList).then((res) => {
-            for (let i = 0; i < imageList.length; i++) {
-                ctx?.drawImage(imageList[i], 0, 0, 600, 600);
-            }
-        });
-        drawAllImg.then(() => {
-            let outputImg = new Image();
-            outputImg.src = ctx?.canvas.toDataURL() || '';
-            let link = document.createElement("a");
-            link.download = name;
-            link.href = outputImg.src;
-            link.click();
-        });
+        await  Promise.all(loadList)
+        for (let i = 0; i < imageList.length; i++) {
+            ctx?.drawImage(imageList[i], 0, 0, 600, 600);
+        }
+        return ctx?.canvas.toDataURL()
     }
 
+}
+
+export const downloadURL = (dataURL :string , name:string)=>{
+    let outputImg = new Image();
+    outputImg.src = dataURL || '';
+    let link = document.createElement("a");
+    link.download = name;
+    link.href = outputImg.src;
+    link.click();
 }

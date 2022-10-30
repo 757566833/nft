@@ -22,7 +22,7 @@ const defaultParam: add = {
 const AddAttribute: React.FC<{ onFinish: () => void }> = (props) => {
     const {onFinish} = props
     const [addAttribute] = useAddAttribute()
-    const {register, handleSubmit, watch, formState: {errors}, reset} = useForm<add>({defaultValues: defaultParam});
+    const {register, handleSubmit,  reset} = useForm<add>({defaultValues: defaultParam});
 
     const [addVisible, setAddVisible] = useState(false)
     const [wallet] = useWallet()

@@ -16,7 +16,7 @@ const defaultParam:add = {
     url:undefined
 }
 const AddTrait:React.FC = ()=>{
-    const { register, control,handleSubmit, watch, formState: { errors },setValue } = useForm<add>({defaultValues:defaultParam});
+    const { register, control,handleSubmit, watch, setValue } = useForm<add>({defaultValues:defaultParam});
     const file = watch("url")
     const [traitState,setTraitState ] = useTrait();
     const {addVisible,addAttributeId,addAttribute,type} = traitState
@@ -37,7 +37,7 @@ const AddTrait:React.FC = ()=>{
             const a = new Image()
             a.src = objectURL
             const loadList=[]
-            loadList.push(new Promise<void>((res,rej)=>{
+            loadList.push(new Promise<void>((res)=>{
                 a.onload = ()=>{
                     res();
                 }
@@ -102,8 +102,9 @@ const AddTrait:React.FC = ()=>{
            const filesUpload = files.map((file)=>{
                let formData = new FormData();
                formData.append('file', file);
+               const [name] = file.name.split(".")
                return upload(formData).then(url=>addTrait({
-                   name:file.name,
+                   name:name,
                    attributeId:addAttributeId,
                    url
                }))
@@ -124,7 +125,7 @@ const AddTrait:React.FC = ()=>{
             <Controller
                 name="url"
                 control={control}
-                render={({ field ,fieldState}) => (
+                render={({ field }) => (
                     <input
                         type="file"
                         onChange={e => {

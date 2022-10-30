@@ -1,6 +1,5 @@
 import {message} from "@/lib/util";
 import {IResponse, server} from "@/services/index";
-import {IAttribute} from "@/services/attribute";
 
 export interface IContractSync {chainId:number,address:string,name:string}
 
@@ -15,8 +14,7 @@ export const contractSync = async (params:IContractSync)=>{
         return
     }
 
-    const json = await res.json()
-    return json;
+    return await res.json();
 }
 export interface IContract {address:string,name:string,symbol:string,chainId:string,owner:string}
 export const getContractsByChainId= async (chainId:number)=>{
@@ -39,5 +37,17 @@ export const getContracts= async ()=>{
     }
 
     const json = await res.json() as IResponse<IContract[]>
+    return json.data;
+}
+
+export const refreshContracts= async ()=>{
+    const url = `${server}/contract/refresh`
+    const res =  await fetch(url,{method:"post"})
+    if( res.status>=300){
+        message.error('请求错误')
+        return
+    }
+
+    const json = await res.json() as IResponse<unknown>
     return json.data;
 }

@@ -20,7 +20,7 @@ const defaultParam:add = {
 const EditAttribute:React.FC<{id?:number,onFinish:()=>void,visible:boolean,onCancel:()=>void}> = (props)=>{
     const {onFinish,visible,onCancel,id} = props
     const [editAttribute] = useEditAttribute()
-    const { register, handleSubmit, watch, formState: { errors },reset,setValue } = useForm<add>({defaultValues:defaultParam});
+    const { register, handleSubmit,setValue } = useForm<add>({defaultValues:defaultParam});
     const [getAttribute] = useAttribute()
     const [wallet] = useWallet()
     const {chainId} = wallet

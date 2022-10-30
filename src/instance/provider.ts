@@ -118,8 +118,7 @@ export class Provider {
         if (Provider.provider) {
             const signer = Provider.provider.getSigner();
             try {
-                const address = await signer.getAddress();
-                return address
+                return await signer.getAddress()
             } catch (e) {
                 return Provider.address
             }
@@ -135,7 +134,6 @@ export class Provider {
                 await Provider.refreshInfoFromMetamask(provider)
             } catch (e) {
                 throw e;
-                return
             }
             Provider.addListener()
             Provider.provider = provider;
@@ -144,8 +142,7 @@ export class Provider {
     }
     private static refreshInfoFromMetamask = async (provider: ethers.providers.JsonRpcProvider = Provider.provider) => {
         try {
-            const address = await provider.send(ETH_REQUEST_ACCOUNTS, []);
-            return address
+            return await provider.send(ETH_REQUEST_ACCOUNTS, [])
         } catch (e) {
         }
         // return new Promise((resolve,reject)=>{
@@ -179,7 +176,7 @@ export class Provider {
         const map = Provider.event[CHAIN_CHANGED];
         for (const mapKey in map) {
             if (map.hasOwnProperty(mapKey)) {
-                map[mapKey](Provider.provider)
+                map[mapKey](Provider.provider).then()
             }
         }
 
@@ -189,7 +186,7 @@ export class Provider {
         const map = Provider.event[ACCOUNTS_CHANGED];
         for (const mapKey in map) {
             if (map.hasOwnProperty(mapKey)) {
-                map[mapKey](Provider.provider)
+                map[mapKey](Provider.provider).then()
             }
         }
     }

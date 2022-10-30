@@ -4,6 +4,7 @@ import {IResponse, server} from "@/services/index";
 export interface ITrait{
     id:number
     attributeId:number
+    attributeName:string,
     name:string,
     url:string
 }
@@ -38,8 +39,7 @@ export const addTrait = async (params:IAddTraitRequest)=>{
         return
     }
 
-    const json = await res.json()
-    return json;
+    return await res.json();
 }
 
 export const delTrait = async (id:number)=>{
@@ -52,6 +52,5 @@ export const delTrait = async (id:number)=>{
         return
     }
 
-    const json = await res.json()
-    return json;
+    return await res.json();
 }

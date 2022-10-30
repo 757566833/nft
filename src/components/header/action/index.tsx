@@ -1,5 +1,5 @@
 import React from "react";
-import {Box, Stack, styled, Switch} from "@mui/material";
+import { styled, Switch} from "@mui/material";
 import {useMode} from "@/context/mode";
 const MaterialUISwitch = styled(Switch)(({theme}) => ({
     width: 62,

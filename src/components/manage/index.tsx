@@ -24,7 +24,7 @@ const Manage: React.FC = () => {
         }
         return
     }, [chainId, currentContract])
-    const {data, error, isValidating, mutate} = useAttributes(current?.address)
+    const {data, isValidating, mutate} = useAttributes(current?.address)
     const attributesRef = useRef<AttributesRef>(null);
     const [,setPreview] = usePreview()
     const [count] = useLocalStorage<string>(PREVIEW_COUNT,"100")

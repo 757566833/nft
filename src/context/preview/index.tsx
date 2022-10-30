@@ -1,5 +1,13 @@
-import React, {PropsWithChildren, useCallback, useEffect} from "react";
-export type  PreviewItem ={attributeId:number,traitId:number,url:string,zIndex:number}[]
+import React, {PropsWithChildren, useCallback} from "react";
+export type PreviewComponent = {
+    attributeId:number,
+    attributeName:string
+    traitId:number,
+    traitName:string,
+    url:string,
+    zIndex:number
+}
+export type  PreviewItem =PreviewComponent[]
 export type  PreviewList =PreviewItem[]
 type IAction = {
     type: 'change',
@@ -19,7 +27,7 @@ export const PreviewContext = React.createContext<{state:PreviewList, dispatch: 
         //
     },
 });
-export const PreviewProvider :React.FC<PropsWithChildren<unknown>> = (props) => {
+export const PreviewProvider :React.FC<PropsWithChildren> = (props) => {
     const {children} = props;
     const [state, dispatch] = React.useReducer(previewReducer, previewDefaultValue);
     const value = React.useMemo(()=>({

@@ -7,7 +7,7 @@ import WalletProvider from "@/context/wallet";
 
 const {LocalStorageProvider} = LocalStorage
 
-export const Context: React.FC<PropsWithChildren<unknown>> = (props) => {
+export const Context: React.FC<PropsWithChildren> = (props) => {
     const {children} = props;
     return <LocalStorageProvider>
         <ModeProvider>

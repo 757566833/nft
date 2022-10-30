@@ -1,9 +1,7 @@
-import React, {ChangeEvent, HTMLAttributes, useCallback, useEffect, useMemo} from "react";
-import {Autocomplete, Box, Typography,TextField,Paper} from "@mui/material";
-import {useWallet} from "@/context/wallet";
-import {useContracts} from "@/http/contract";
+import React, {ChangeEvent, useCallback} from "react";
+import {Box, Typography,TextField} from "@mui/material";
 import {LocalStorage} from "@/lib/react-context";
-import {CURRENT_CONTRACT, PREVIEW_COUNT} from "@/constant";
+import {PREVIEW_COUNT} from "@/constant";
 const {useLocalStorage} = LocalStorage
 
 export const Count:React.FC = ()=>{

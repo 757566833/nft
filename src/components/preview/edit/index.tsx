@@ -1,11 +1,11 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {Box, Button, Stack} from "@mui/material";
+import {Box, Button} from "@mui/material";
 import {Modal} from "@/lib/react-component";
 import {useEdit} from "@/components/preview/context/edit";
-import {PreviewItem, usePreview} from "@/context/preview";
+import {PreviewComponent, PreviewItem, usePreview} from "@/context/preview";
 import Group from "@/components/preview/edit/group";
-import {ITrait} from "@/services";
-import {generateImage} from "@/utils";
+import {ITrait} from "@/services/trait";
+import {downloadURL, generateImage} from "@/utils";
 
 export const Edit: React.FC = () => {
     const [edit, setEdit] = useEdit()
@@ -42,9 +42,11 @@ export const Edit: React.FC = () => {
                 const img = data[i];
                 if(img.attributeId==attributeId){
                     if(img.url!=item.url){
-                        const nextImg:{attributeId:number,traitId:number,url:string,zIndex:number} = {
+                        const nextImg:PreviewComponent = {
                             attributeId:img.attributeId,
+                            attributeName:img.attributeName,
                             traitId:item.id,
+                            traitName:item.name,
                             url:item.url,
                             zIndex:img.zIndex
                         }
@@ -58,7 +60,11 @@ export const Edit: React.FC = () => {
 
     },[data, value])
     const handleDownload = useCallback(()=>{
-        generateImage(data.map(item=>`${process.env.NEXT_PUBLIC_FILE}${item.url}`),`demo${value?.index||0}.png`)
+        generateImage(data.map(item=>`${process.env.NEXT_PUBLIC_FILE}${item.url}`)).then(res=>{
+            if(res){
+                downloadURL(res,`demo${value?.index||0}.png`)
+            }
+        })
     },[data, value?.index])
     return <>
         <Modal open={!!visible} onCancel={handleCancel} maxWidth={false} onOk={handleOk}>

@@ -8,7 +8,6 @@ import Generate from "@/components/generate";
 
 export const Index:React.FC = ()=>{
     const [active,setActive] = useState("manage");
-    console.log(active)
     return <Box>
         <Header value={active} onChange={setActive}/>
         <Box hidden={active!='preview'}>

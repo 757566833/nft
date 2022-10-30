@@ -23,7 +23,7 @@ export const Group:React.FC<{preview:PreviewItem,onChange:(attributeId:number,it
         }
         return
     }, [chainId, currentContract])
-    const {data, error, isValidating, mutate} = useAttributes(current?.address)
+    const {data} = useAttributes(current?.address)
     return <Box border={"1px solid #dde3e7"}>
 
         {data?.filter((item)=>item.id).map((item)=>{

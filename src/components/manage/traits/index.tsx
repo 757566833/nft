@@ -10,8 +10,6 @@ import React, {
 import {Box, Slider, Stack, Typography, Skeleton, Menu, MenuItem, IconButton} from "@mui/material";
 import {useDelTrait, useTraits} from "@/http/trait";
 import {sum} from "@/utils";
-import ControlPointOutlinedIcon from "@mui/icons-material/ControlPointOutlined";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {Dropdown} from "@/lib/react-component";
@@ -25,7 +23,7 @@ const map: Record<number, string> = {
     75: 'Often',
     100: 'Very Often'
 }
-export type TraitsRefValue = {attributeId:number,traitId:number, url: string; name: string; value: number | null; }[]
+export type TraitsRefValue = {attributeId:number,attributeName:string,traitId:number, url: string; name: string; value: number | null; }[]
 export interface TraitsProps{
     attributeId: number,
     total: number
@@ -35,7 +33,7 @@ export interface TraitsRef{
 }
 const Traits: React.ForwardRefRenderFunction<TraitsRef,TraitsProps> = (props,ref) => {
     const {attributeId, total} = props;
-    const {data, error, isValidating, mutate} = useTraits(attributeId)
+    const {data, isValidating} = useTraits(attributeId)
     const s = useMemo(() => {
         const array = new Array(total).fill('')
         return array.map((_, index) => <Box key={index} border={'1px solid #dde3e7'} borderRadius={5} width={208}
@@ -172,6 +170,7 @@ const Traits: React.ForwardRefRenderFunction<TraitsRef,TraitsProps> = (props,ref
         for (let i = 0; i < data.length; i++) {
             value.push({
                 attributeId:data[i].attributeId,
+                attributeName:data[i].attributeName,
                 traitId:data[i].id,
                 url:data[i].url,
                 name:data[i].name,

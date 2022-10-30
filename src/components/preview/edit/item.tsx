@@ -1,12 +1,12 @@
-import React, {useCallback, useMemo} from "react";
+import React, { useMemo} from "react";
 import {useTraits} from "@/http/trait";
 import {Box, Stack} from "@mui/material";
 import {PreviewItem} from "@/context/preview";
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
-import {ITrait} from "@/services";
+import {ITrait} from "@/services/trait";
 export const Item:React.FC<{attributeId: number,preview:PreviewItem,onChange:(attributeId:number,item:ITrait)=>void}> = (props)=>{
     const {attributeId,preview,onChange} = props;
-    const {data, error, isValidating, mutate} = useTraits(attributeId)
+    const {data} = useTraits(attributeId)
     const idList = useMemo(()=>{
         return preview.map(item=>item.traitId)
     },[preview])

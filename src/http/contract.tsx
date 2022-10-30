@@ -1,8 +1,7 @@
 
 import {useCallback} from "react";
-import {contractSync, getContracts, getContractsByChainId, IContract, IContractSync} from "@/services/contract";
+import {contractSync, getContracts, getContractsByChainId, IContractSync} from "@/services/contract";
 import useSWR from "swr";
-import {IResponse} from "@/services";
 
 export const CONTRACT = 'contract'
 export const useContracts = (chainId?:number)=>{
