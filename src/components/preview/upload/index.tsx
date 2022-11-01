@@ -1,5 +1,14 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {Box, Button, Stack, Typography, CircularProgress, LinearProgress, TextField} from "@mui/material";
+import {
+    Box,
+    Button,
+    Stack,
+    Typography,
+    CircularProgress,
+    LinearProgress,
+    TextField,
+    FormHelperText
+} from "@mui/material";
 import {generateImage} from "@/utils";
 import {usePreview} from "@/context/preview";
 import {Modal} from "@/lib/react-component";
@@ -14,6 +23,7 @@ import {useForm} from "react-hook-form";
 import {ethers} from "ethers";
 import {getFee, guessEIP1559Fee} from "@/utils/fee";
 import Provider from "@/instance/provider";
+import {LoadingButton} from "@mui/lab";
 const {useLocalStorage} = LocalStorage
 
 interface AddressForm {
@@ -32,6 +42,7 @@ export const Upload: React.FC = () => {
     const [index,setIndex] = useState(0);
     const [progress ,setProgress] = useState(0)
     const [currentContract] = useLocalStorage<Record<number, IContract|null>>(CURRENT_CONTRACT,{})
+    const [loading,setLoading] = useState(false)
     const current = useMemo(() => {
         if (typeof chainId == "number") {
             return currentContract[chainId]
@@ -78,10 +89,12 @@ export const Upload: React.FC = () => {
                             const metaDataRes = await ipfsUpload(metaDataFormData)
                             if(metaDataRes){
                                 setProgress(50)
+                                setLoading(true)
                                 try {
                                     const contract = await GetErc721(contractAddress)
                                     if(contract){
-                                        const gas = await contract.estimateGas.mint(data.address, metaDataRes.data)
+
+                                        const gas = await contract.estimateGas.mint(data.address,`ipfs://${metaDataRes.data}`)
                                         const fee = await getFee({
                                             provider,
                                             gasLimit:gas,
@@ -94,16 +107,12 @@ export const Upload: React.FC = () => {
                                 }catch (e:any) {
                                     setProgress(0)
                                     message.error(e.reason)
+                                }finally {
+                                    setLoading(false)
                                 }
-
-
                             }
-
                         }
-
-
                     }
-
                 }
             }
 
@@ -122,7 +131,6 @@ export const Upload: React.FC = () => {
         if(address){
             setValue("address",address)
         }
-
     },[address, setValue])
     return <>
         <Modal open={visible} title={`Upload ${current?.name} ${index}`} maxWidth={false} noFooter={true}>
@@ -137,7 +145,8 @@ export const Upload: React.FC = () => {
                 <TextField {...register("address",{validate:ethers.utils.isAddress})} error={!!errors.address} size={"small"} helperText={'received address'}/>
                 <LinearProgress  variant="determinate" value={progress}/>
                 <Stack spacing={2}>
-                    {!finish&&<Button fullWidth={true} variant={"contained"} onClick={handleSubmit(handleStart)}>start</Button>}
+                    {!finish&&<LoadingButton fullWidth={true} variant={"contained"} disabled={current?.owner!=address} loading={loading} onClick={handleSubmit(handleStart)}>start</LoadingButton>}
+                    {current?.owner!=address&&<FormHelperText error={true}>contract ownerOf {current?.owner}</FormHelperText>}
                     {finish&&<Button fullWidth={true} variant={"contained"} onClick={handleNext}>next</Button>}
 
                     <Button variant={"contained"} onClick={handleCancel}>cancel</Button>

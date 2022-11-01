@@ -8,6 +8,7 @@ import {CONTRACT_ADDRESS} from "@/constant/contract";
 import {GetErc721Factory} from "@/contract";
 import {getFee} from "@/utils/fee";
 import {Modal} from "@/lib/react-component";
+import {LoadingButton} from "@mui/lab";
 
 export interface ICreateContract {
     name:string,
@@ -21,6 +22,7 @@ export const General:React.FC = ()=>{
     const { register, handleSubmit } = useForm<ICreateContract>({defaultValues:defaultParam});
     const [wallet] = useWallet()
     const {chainId,isEIP1559} = wallet
+    const [loading,setLoading] = useState(false)
     const handleCreate = useCallback(async (data:ICreateContract)=>{
         const provider =  await Provider.getInstance();
         if(!provider||!chainId){
@@ -33,6 +35,7 @@ export const General:React.FC = ()=>{
         }
         const erc721Factory = await GetErc721Factory(contractAddress);
         if(erc721Factory){
+            setLoading(true)
             const gas = await erc721Factory.estimateGas.createErc721(data.name,data.symbol)
             const fee = await getFee({
                 provider,
@@ -43,7 +46,9 @@ export const General:React.FC = ()=>{
                const tx = await erc721Factory.createErc721(data.name,data.symbol,fee)
                console.log(await tx.wait())
             }catch (e:any) {
-                message.error(e.message)
+                message.error(e.reason)
+            }finally {
+                setLoading(false)
             }
 
         }
@@ -61,7 +66,7 @@ export const General:React.FC = ()=>{
                 <Stack width={484} padding={1} spacing={2} marginTop={1}>
                     <TextField fullWidth={true} label={'name'} {...register("name",{required:true})}/>
                     <TextField fullWidth={true} label={'symbol'} {...register("symbol",{required:true})}/>
-                    <Button variant={"contained"} onClick={handleSubmit(handleCreate)}>create</Button>
+                    <LoadingButton variant={"contained"} onClick={handleSubmit(handleCreate)} loading={loading}>create</LoadingButton>
                 </Stack>
             </Box>
         </Modal>

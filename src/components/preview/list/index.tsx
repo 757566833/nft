@@ -74,7 +74,9 @@ export const List: React.FC = () => {
                     {group.map((item, index) => {
                         return <Box key={index} width={240} height={240} position={"absolute"}
                                     zIndex={item.zIndex}
-                                    component={"img"} src={`${process.env.NEXT_PUBLIC_FILE}${item.url}`}/>
+                                    component={"img"} src={`${process.env.NEXT_PUBLIC_FILE}${item.url}`}
+                       loading={'lazy'}
+                        />
                     })}
                 </Box>
                 <Box paddingLeft={2} paddingTop={1} paddingBottom={1} paddingRight={2}>
