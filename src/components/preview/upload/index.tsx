@@ -100,7 +100,7 @@ export const Upload: React.FC = () => {
                                             gasLimit:gas,
                                             isEIP1559
                                         })
-                                        await contract.mint(data.address, metaDataRes.data,fee);
+                                        await contract.mint(data.address, `ipfs://${metaDataRes.data}`,fee);
                                         setProgress(100)
                                         setFinish(true)
                                     }
