@@ -26,12 +26,12 @@ export const General:React.FC = ()=>{
     const handleCreate = useCallback(async (data:ICreateContract)=>{
         const provider =  await Provider.getInstance();
         if(!provider||!chainId){
-            return message.info("未安装metamask")
+            return message.info("can't find metamask")
         }
 
         const contractAddress = CONTRACT_ADDRESS[chainId]
         if(!contractAddress){
-            return message.info("不支持")
+            return message.info("not support")
         }
         const erc721Factory = await GetErc721Factory(contractAddress);
         if(erc721Factory){

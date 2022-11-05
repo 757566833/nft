@@ -126,7 +126,7 @@ export const Upload: React.FC = () => {
     }, [])
     useEffect(()=>{
         setIndex(0)
-    },[preview.length])
+    },[current?.address])
     useEffect(()=>{
         if(address){
             setValue("address",address)

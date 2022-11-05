@@ -1,13 +1,12 @@
-import React, {HTMLAttributes, useCallback, useEffect, useMemo} from "react";
-import {Autocomplete, Box, Typography,TextField,Paper} from "@mui/material";
+import React, {HTMLAttributes, useCallback, useMemo} from "react";
+import {Autocomplete, Box, Typography, TextField, Paper, Stack, IconButton} from "@mui/material";
 import {useWallet} from "@/context/wallet";
 import {useContracts} from "@/http/contract";
-import {useAttributes} from "@/http/attribute";
-import {AutocompleteValue} from "@mui/base/AutocompleteUnstyled/useAutocomplete";
 import {IContract} from "@/services/contract";
 import {LocalStorage} from "@/lib/react-context";
 import {CURRENT_CONTRACT} from "@/constant";
 import {AutocompleteRenderInputParams} from "@mui/material/Autocomplete/Autocomplete";
+import {Refresh} from "@mui/icons-material";
 const {useLocalStorage} = LocalStorage
 
 
@@ -27,7 +26,7 @@ const renderInput = (params:AutocompleteRenderInputParams) => <TextField {...par
 export const General:React.FC = ()=>{
     const [wallet] = useWallet();
     const {chainId} = wallet;
-    const {data, error, isValidating, mutate} = useContracts(chainId)
+    const {data, isValidating, mutate} = useContracts(chainId)
     const [currentContract,setCurrentContract] = useLocalStorage<Record<number, IContract|null>>(CURRENT_CONTRACT,{})
     const options = useMemo(()=>{
         return data||[]
@@ -49,25 +48,35 @@ export const General:React.FC = ()=>{
         }
         return null
     },[chainId, currentContract, options.length])
+    const handleRefresh = useCallback(()=>{
+        mutate().then()
+    },[mutate])
     return <Box>
         <Typography variant={'h4'} fontWeight={"bold"}>Contract</Typography>
         <Typography variant={'body2'}>select contract where chainId is {chainId}</Typography>
-        <Box marginTop={2} width={484}>
-            <Autocomplete
+        <Stack marginTop={2} spacing={3} direction={"row"}  alignItems={"center"}>
+            <Box  width={484}>
+                <Autocomplete
 
-                disablePortal
-                loading={isValidating}
-                id="combo-box-demo"
-                getOptionLabel={(option) => option.name}
-                options={options}
-                onChange={handleChange}
-                value={current}
-                renderOption={renderOption}
-                PaperComponent={CustomPaper}
-                isOptionEqualToValue={isOptionEqualToValue}
-                renderInput={renderInput}
-            />
-        </Box>
+                    disablePortal
+                    loading={isValidating}
+                    id="combo-box-demo"
+                    getOptionLabel={(option) => option.name}
+                    options={options}
+                    onChange={handleChange}
+                    value={current}
+                    renderOption={renderOption}
+                    PaperComponent={CustomPaper}
+                    isOptionEqualToValue={isOptionEqualToValue}
+                    renderInput={renderInput}
+                />
+            </Box>
+            <Box>
+                <IconButton onClick={handleRefresh}>
+                    <Refresh/>
+                </IconButton>
+            </Box>
+        </Stack>
     </Box>
 }
 export default General;

@@ -13,7 +13,7 @@ import {useWallet} from "@/context/wallet";
 const {useLocalStorage} = LocalStorage
 
 export const List: React.FC = () => {
-    const [preview] = usePreview();
+    const [preview,setPreview] = usePreview();
     const [wallet] = useWallet()
     const {chainId} = wallet
     const [filterValue] = useFilterValue();
@@ -50,6 +50,9 @@ export const List: React.FC = () => {
             }
         })
     },[setEdit])
+    useEffect(()=>{
+        setPreview([])
+    },[current?.address, setPreview])
     return <>
         <Edit/>
         {preview.filter(item => filterValue.length > 0 ? intersection(filterValue, item.map(i => i.traitId)).length > 0 : true).map((group, index) => {
