@@ -1,10 +1,8 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {
     Box,
     Button,
     Stack,
-    Typography,
-    CircularProgress,
     LinearProgress,
     TextField,
     FormHelperText
@@ -21,15 +19,19 @@ import {ipfsUpload} from "@/services/upload";
 import {GetErc721} from "@/contract";
 import {useForm} from "react-hook-form";
 import {ethers} from "ethers";
-import {getFee, guessEIP1559Fee} from "@/utils/fee";
+import {getFee} from "@/utils/fee";
 import Provider from "@/instance/provider";
 import {LoadingButton} from "@mui/lab";
 const {useLocalStorage} = LocalStorage
 
 interface AddressForm {
+    name:string
+    description:string
     address:string
 }
-const defaultParam = {
+const defaultParam:AddressForm = {
+    name:'',
+    description:'',
     address:''
 }
 
@@ -70,12 +72,11 @@ export const Upload: React.FC = () => {
                         const res = await ipfsUpload(formData)
                         setProgress(25)
                         if(res){
-                            const [name] = file.name.split('.')
                             const ipfsImage = `ipfs://${res.data}`
                             const json = {
-                                name:name,
+                                name:data.name,
                                 image:ipfsImage,
-                                description: "",
+                                description: data.description,
                                 attributes:nft.map((item)=>({
                                     trait_type:item.attributeName,
                                     value:item.traitName
@@ -132,16 +133,32 @@ export const Upload: React.FC = () => {
             setValue("address",address)
         }
     },[address, setValue])
+    useEffect(()=>{
+        if(current?.name){
+            setValue("name",`${current.name}-${index}`)
+        }
+    },[current?.name, index, setValue])
     return <>
         <Modal open={visible} title={`Upload ${current?.name} ${index}`} maxWidth={false} noFooter={true}>
             <Stack spacing={2}>
-                <Box width={480} height={480} position={"relative"}>
-                    {preview[index]?.map((item, index) => {
-                        return <Box key={index} width={480} height={480} position={"absolute"}
-                                    zIndex={item.zIndex}
-                                    component={"img"} src={`${process.env.NEXT_PUBLIC_FILE}${item.url}`}/>
-                    })}
+                <Box width={480} display={"flex"} justifyContent={"center"}>
+                    <Box width={240} height={240} position={"relative"}>
+                        {preview[index]?.map((item, index) => {
+                            return <Box key={index} width={240} height={240} position={"absolute"}
+                                        zIndex={item.zIndex}
+                                        component={"img"} src={`${process.env.NEXT_PUBLIC_FILE}${item.url}`}/>
+                        })}
+                    </Box>
                 </Box>
+
+                <TextField {...register("name",{required:true})} error={!!errors.name} size={"small"} helperText={'nft name'}/>
+                <TextField
+                    {...register("description",)} size={"small"} helperText={'nft description'}
+                    label="description"
+                    multiline
+                    rows={4}
+                />
+
                 <TextField {...register("address",{validate:ethers.utils.isAddress})} error={!!errors.address} size={"small"} helperText={'received address'}/>
                 <LinearProgress  variant="determinate" value={progress}/>
                 <Stack spacing={2}>
