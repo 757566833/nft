@@ -43,8 +43,7 @@ export const General:React.FC = ()=>{
                 gasLimit:gas,
             })
             try {
-               const tx = await erc721Factory.createErc721(data.name,data.symbol,fee)
-               console.log(await tx.wait())
+               await erc721Factory.createErc721(data.name,data.symbol,fee)
             }catch (e:any) {
                 message.error(e.reason)
             }finally {

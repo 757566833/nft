@@ -57,7 +57,7 @@ export const General:React.FC = ()=>{
         <Stack marginTop={2} spacing={3} direction={"row"}  alignItems={"center"}>
             <Box  width={484}>
                 <Autocomplete
-
+                    disabled={!chainId}
                     disablePortal
                     loading={isValidating}
                     id="combo-box-demo"

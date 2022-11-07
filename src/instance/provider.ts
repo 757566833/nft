@@ -205,7 +205,7 @@ export class Provider {
         if (!ethereum) {
             return false
         } else {
-            const addresses = await ethereum.request({method: 'eth_accounts'})
+            const addresses = await ethereum.request({method: 'eth_requestAccounts'})
             return addresses.length != 0
         }
 
