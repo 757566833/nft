@@ -38,6 +38,7 @@ const Header:React.FC<{value:string,onChange:(value: string)=>void}> = (props)=>
                 <Tab  iconPosition="start" label={<Stack direction={"row"} alignItems={"center"} spacing={1} ><ColorLensOutlinedIcon/><Box>Manage</Box></Stack>} value={"manage"}/>
                 <Tab  iconPosition="start" label={<Stack direction={"row"} alignItems={"center"} spacing={1} ><SettingsOutlinedIcon/><Box>Settings</Box></Stack>} value={"settings"}/>
                 <Tab  iconPosition="start" label={<Stack direction={"row"} alignItems={"center"} spacing={1} ><ImageOutlinedIcon/><Box>Generate</Box></Stack>} value={"generate"}/>
+                <Tab  iconPosition="start" label={<Stack direction={"row"} alignItems={"center"} spacing={1} ><ImageOutlinedIcon/><Box>Market</Box></Stack>} value={"market"}/>
             </Tabs>
         </Box>
         <Box flex={1} textAlign={"right"}>
