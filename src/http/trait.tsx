@@ -2,16 +2,14 @@ import useSWR, {useSWRConfig} from "swr";
 import {
     addTrait, delTrait,
     getTraits,
-    IAddTraitRequest,
+    IAddTraitRequest, ITrait,
 } from "@/services/trait";
 import {useCallback, useMemo} from "react";
+import {Http} from "@/services";
+import {getAttributes} from "@/services/attribute";
 
-export const TRAITS = 'traits'
-export const useTraits = (id:number)=>{
-    const get = useCallback(()=>getTraits(id),[id]);
-    const {data,error,isValidating,mutate} = useSWR(`${TRAITS}${id}`,get)
-
-    return {data,error,isValidating,mutate}
+export const useTraits = (params?:{attributeId?: number,chainId?:string})=>{
+    return  useSWR<ITrait[]>(getTraits(params),Http.Get)
 }
 
 export const useAddTrait = ()=>{
@@ -19,7 +17,9 @@ export const useAddTrait = ()=>{
    const add = useCallback(async (params:IAddTraitRequest)=>{
        const res = await addTrait(params);
        if(res){
-           await mutate(`${TRAITS}${params.attributeId}`)
+
+           await mutate(getTraits({attributeId:params.attributeId,chainId:params.chainId}))
+           await mutate(getAttributes({contract:params.contract,chainId:params.chainId}))
            return res
        }
    },[mutate])
@@ -29,26 +29,17 @@ export const useAddTrait = ()=>{
 
 export const useDelTrait = ()=>{
     const {mutate} = useSWRConfig()
-    const del = useCallback(async (id:number,attributeId:number)=>{
+    const del = useCallback(async (id:number,attributeId:number,chainId?:string,contract?: string)=>{
         const res = await delTrait(id);
         if(res){
-            await mutate(`${TRAITS}${attributeId}`)
+            if(chainId){
+                console.log('delete',attributeId,chainId)
+                await mutate(getTraits({attributeId,chainId}))
+                await mutate(getAttributes({contract,chainId}))
+            }
             return res
         }
     },[mutate])
 
     return [del]
 }
-
-// export const useEditTrait = ()=>{
-//     const {mutate} = useSWRConfig()
-//     const add = useCallback(async (params:IAttributeRequest)=>{
-//         const res = await editAttribute(params);
-//         if(res){
-//             await mutate(${TRAITS})
-//             return res
-//         }
-//     },[mutate])
-//
-//     return [add]
-// }

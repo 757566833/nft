@@ -4,7 +4,6 @@ import {useForm} from "react-hook-form";
 import Provider from "@/instance/provider";
 import {message} from "@/lib/util";
 import {useWallet} from "@/context/wallet";
-import {CONTRACT_ADDRESS} from "@/constant/contract";
 import {GetErc721Factory} from "@/contract";
 import {getFee} from "@/utils/fee";
 import {Modal} from "@/lib/react-component";
@@ -28,12 +27,7 @@ export const General:React.FC = ()=>{
         if(!provider||!chainId){
             return message.info("can't find metamask")
         }
-
-        const contractAddress = CONTRACT_ADDRESS[chainId]
-        if(!contractAddress){
-            return message.info("not support")
-        }
-        const erc721Factory = await GetErc721Factory(contractAddress);
+        const erc721Factory = await GetErc721Factory(chainId);
         if(erc721Factory){
             setLoading(true)
             const gas = await erc721Factory.estimateGas.createErc721(data.name,data.symbol)
@@ -70,7 +64,10 @@ export const General:React.FC = ()=>{
             </Box>
         </Modal>
         <Typography variant={'h4'} fontWeight={"bold"}>Contract</Typography>
-        <Typography variant={'body2'}>create erc721 contract</Typography>
+        <Stack direction={"row"} spacing={1} alignItems={"center"}>
+            <Typography variant={'body2'}>create erc721 contract on </Typography> <Typography color={"red"} fontWeight={"bold"}>current chain {chainId}</Typography>
+        </Stack>
+
         <Box marginTop={2}>
             <Button variant={"contained"} onClick={handleOpen}>create</Button>
         </Box>

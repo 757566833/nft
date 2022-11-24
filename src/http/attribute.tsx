@@ -1,20 +1,18 @@
 import useSWR, {useSWRConfig} from "swr";
-import {addAttribute, editAttribute, getAttribute, getAttributes, IAttributeRequest} from "@/services/attribute";
+import {
+    addAttribute,
+    editAttribute,
+    getAttribute,
+    getAttributes,
+    IAttribute,
+    IAttributeRequest
+} from "@/services/attribute";
 import {useCallback} from "react";
+import {Http} from "@/services";
 
 export const ATTRIBUTES = 'attributes'
-export const useAttributes = (contract?:string)=>{
-    const get = useCallback(async ()=>{
-        if(contract){
-            return await getAttributes(contract)
-        }else{
-            return  []
-        }
-
-    },[contract])
-    const {data,error,isValidating,mutate} = useSWR(`${ATTRIBUTES}${contract}`,get)
-
-    return {data,error,isValidating,mutate}
+export const useAttributes = (params?:{contract?: string,chainId?:string})=>{
+    return  useSWR<IAttribute[]>(getAttributes(params),Http.Get)
 }
 export const useAttribute = ()=>{
     const get = useCallback((id:number)=>getAttribute(id),[])

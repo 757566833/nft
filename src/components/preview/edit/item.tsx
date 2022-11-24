@@ -4,9 +4,12 @@ import {Box, Stack} from "@mui/material";
 import {PreviewItem} from "@/context/preview";
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import {ITrait} from "@/services/trait";
+import {useWallet} from "@/context/wallet";
 export const Item:React.FC<{attributeId: number,preview:PreviewItem,onChange:(attributeId:number,item:ITrait)=>void}> = (props)=>{
+    const [wallet] = useWallet()
+    const {chainId} = wallet;
     const {attributeId,preview,onChange} = props;
-    const {data} = useTraits(attributeId)
+    const {data} = useTraits({attributeId,chainId:chainId?.toString()})
     const idList = useMemo(()=>{
         return preview.map(item=>item.traitId)
     },[preview])

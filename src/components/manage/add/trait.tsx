@@ -7,6 +7,11 @@ import ImgCrop from "@/lib/react-component/img-crop";
 import {upload} from "@/services/upload";
 import {useAddTrait} from "@/http/trait";
 import {message} from "@/lib/util";
+import {useWallet} from "@/context/wallet";
+import {IContract} from "@/services/contract";
+import {CURRENT_CONTRACT} from "@/constant";
+import {LocalStorage} from "@/lib/react-context";
+const {useLocalStorage} = LocalStorage
 interface add{
     name:string,
     url?:File
@@ -16,13 +21,15 @@ const defaultParam:add = {
     url:undefined
 }
 const AddTrait:React.FC = ()=>{
+    const [wallet] = useWallet()
+    const {chainId} = wallet;
     const { register, control,handleSubmit, watch, setValue } = useForm<add>({defaultValues:defaultParam});
     const file = watch("url")
     const [traitState,setTraitState ] = useTrait();
     const {addVisible,addAttributeId,addAttribute,type} = traitState
     const [addTrait] = useAddTrait()
     const cropRef = useRef<{ getBlob: () => Promise<Blob | undefined> | undefined; }>(null)
-
+    const [currentContract] = useLocalStorage<Record<number, IContract|null>>(CURRENT_CONTRACT,{})
 
     const handleCloseAdd = useCallback(()=>{
         setTraitState({
@@ -32,7 +39,7 @@ const AddTrait:React.FC = ()=>{
     const handleAdd = useCallback(async (data:add)=>{
         const blob = await cropRef.current?.getBlob()
 
-        if(blob&&addAttributeId){
+        if(blob&&addAttributeId&&chainId){
             const objectURL = URL.createObjectURL(blob);
             const a = new Image()
             a.src = objectURL
@@ -53,7 +60,9 @@ const AddTrait:React.FC = ()=>{
             const res = await  addTrait({
                 name:data.name,
                 attributeId:addAttributeId,
-                url
+                url,
+                chainId:chainId.toString(),
+                contract:currentContract[chainId||0]?.address||''
             })
             if(res){
                 setTraitState({
@@ -62,7 +71,7 @@ const AddTrait:React.FC = ()=>{
             }
 
         }
-    },[addAttributeId, addTrait, setTraitState])
+    },[addAttributeId, addTrait, chainId, currentContract, setTraitState])
     const singleVisible = useMemo(()=>{
         return addVisible&&type=="single"
     },[addVisible, type])
@@ -74,7 +83,7 @@ const AddTrait:React.FC = ()=>{
     },[])
     const handleDrop = useCallback(async (event:React.DragEvent<HTMLDivElement>)=>{
         event.preventDefault()
-       if(typeof addAttributeId=="number"){
+       if(typeof addAttributeId=="number"&&chainId){
            const {items} = event.dataTransfer
            if(items.length>1||items.length==0){
                message.error("only one dir")
@@ -106,7 +115,9 @@ const AddTrait:React.FC = ()=>{
                return upload(formData).then(url=>addTrait({
                    name:name,
                    attributeId:addAttributeId,
-                   url
+                   url,
+                   chainId:chainId.toString(),
+                   contract:currentContract[chainId||0]?.address||''
                }))
            })
            Promise.all(filesUpload).then()
@@ -118,7 +129,7 @@ const AddTrait:React.FC = ()=>{
         //     const file = items[i].webkitGetAsEntry()
         //    // console.log(file)
         // }
-    },[addAttributeId, addTrait])
+    },[addAttributeId, addTrait, chainId, currentContract])
     return  <><Modal title={`add ${addAttribute} trait`} keepMounted={true} maxWidth={false} open={singleVisible} onCancel={handleCloseAdd} onOk={handleSubmit(handleAdd)}>
         <Stack width={716} minHeight={716} padding={1} spacing={2}>
             <TextField fullWidth={true} label={'name'} {...register("name")}/>

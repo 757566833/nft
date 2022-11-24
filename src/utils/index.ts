@@ -110,3 +110,16 @@ export const downloadURL = (dataURL :string , name:string)=>{
     link.href = outputImg.src;
     link.click();
 }
+
+export const omitEmpty = (params?:Record<string, any>)=>{
+    if(!params){
+        return {}
+    }
+    const _map:Record<string, any> = {}
+    for (const mapKey in params) {
+        if(params.hasOwnProperty(mapKey)&&params[mapKey]){
+            _map[mapKey] = params[mapKey]
+        }
+    }
+    return  _map
+}

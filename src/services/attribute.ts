@@ -1,5 +1,6 @@
 import {message} from "@/lib/util";
 import {IResponse, server} from "@/services/index";
+import {omitEmpty} from "@/utils";
 
 export interface IAttribute{
     id:number
@@ -8,6 +9,7 @@ export interface IAttribute{
     count:number
 }
 export const getAttribute = async (id:number)=>{
+
     const url = `${server}/attribute/${id}`
     const res =  await fetch(url)
     if( res.status>=300){
@@ -22,25 +24,19 @@ export const getAttribute = async (id:number)=>{
     return json.data;
 }
 
-export const getAttributes = async (contract:string)=>{
-    const url = `${server}/attributes/list/${contract}`
-    const res =  await fetch(url)
-    if( res.status>=300){
-        message.error('请求错误')
-        return
+export const getAttributes = (params?:{contract?: string,chainId?:string})=>{
+    if(params?.contract&&params?.chainId){
+        const _params = new URLSearchParams(omitEmpty(params as unknown as Record<string, string>));
+        // console.log(`${server}/attributes/list?${_params}`)
+        return  `${server}/attributes/list?${_params}`
     }
-    const json = await res.json() as IResponse<IAttribute[]>
-    if(json.code>=300){
-        message.error(json.msg)
-        return
-    }
-    return json.data;
 }
 export interface IAttributeRequest{
     id:number
     name:string,
     zIndex:number
     contract:string
+    chainId:string
 }
 
 export const addAttribute = async (params:Omit<IAttributeRequest, 'id'>)=>{

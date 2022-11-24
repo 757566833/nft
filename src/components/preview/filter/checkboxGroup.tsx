@@ -3,10 +3,13 @@ import {useTraits} from "@/http/trait";
 import {Checkbox, FormControlLabel, FormGroup, Typography,Stack} from "@mui/material";
 import {useFilterValue} from "@/components/preview/context/filter";
 import {useCountValue} from "@/components/preview/context/count";
+import {useWallet} from "@/context/wallet";
 
 export const CheckboxGroup:React.FC<{attributeId: number}> = (props)=>{
     const {attributeId} = props;
-    const {data} = useTraits(attributeId)
+    const [wallet] = useWallet()
+    const {chainId} = wallet;
+    const {data} = useTraits({attributeId,chainId:chainId?.toString()})
     const [filterValue,setFilterValue] = useFilterValue()
     const [countValue] = useCountValue();
     const handleChange= useCallback((id:number,checked:boolean)=>{

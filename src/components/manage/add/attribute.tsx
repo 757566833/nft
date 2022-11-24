@@ -41,11 +41,12 @@ const AddAttribute: React.FC<{ onFinish: () => void }> = (props) => {
         setAddVisible(false)
     }, [])
     const handleAdd = useCallback(async (data: add) => {
-        if(current){
+        if(current&&chainId){
             const res = await addAttribute({
                 ...data,
                 zIndex: Number.parseInt(`${data.zIndex}`),
-                contract:current.address
+                contract:current.address,
+                chainId:chainId?.toString()
             })
             setAddVisible(false)
             if (res) {
@@ -53,7 +54,7 @@ const AddAttribute: React.FC<{ onFinish: () => void }> = (props) => {
             }
         }
 
-    }, [addAttribute, current, onFinish])
+    }, [addAttribute, chainId, current, onFinish])
     useEffect(() => {
         if (!addVisible) {
             reset()

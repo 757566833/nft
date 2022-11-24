@@ -13,6 +13,12 @@ import {sum} from "@/utils";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {Dropdown} from "@/lib/react-component";
+import {useWallet} from "@/context/wallet";
+import {IContract} from "@/services/contract";
+import {CURRENT_CONTRACT} from "@/constant";
+import {LocalStorage} from "@/lib/react-context";
+
+const {useLocalStorage} = LocalStorage
 
 
 
@@ -33,7 +39,10 @@ export interface TraitsRef{
 }
 const Traits: React.ForwardRefRenderFunction<TraitsRef,TraitsProps> = (props,ref) => {
     const {attributeId, total} = props;
-    const {data, isValidating} = useTraits(attributeId)
+    const [wallet] = useWallet();
+    const {address,chainId} = wallet;
+    const {data, isValidating} = useTraits({attributeId,chainId:chainId?.toString()})
+    const [currentContract] = useLocalStorage<Record<number, IContract|null>>(CURRENT_CONTRACT,{})
     const s = useMemo(() => {
         const array = new Array(total).fill('')
         return array.map((_, index) => <Box key={index} border={'1px solid #dde3e7'} borderRadius={5} width={208}
@@ -73,8 +82,8 @@ const Traits: React.ForwardRefRenderFunction<TraitsRef,TraitsProps> = (props,ref
     const [rates, setRates] = useState<string[]>([])
     const [delTrait] = useDelTrait();
     const handleDelete = useCallback((id:number,attributeId:number)=>{
-        delTrait(id,attributeId).then()
-    },[delTrait])
+        delTrait(id,attributeId,chainId?.toString(),currentContract[chainId||0]?.address||'').then()
+    },[chainId, currentContract, delTrait])
     const handleChange = useCallback(() => {
         const nums = itemsRef.current
         const numSum = sum(nums);

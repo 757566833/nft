@@ -1,5 +1,6 @@
 import {message} from "@/lib/util";
 import {IResponse, server} from "@/services/index";
+import {omitEmpty} from "@/utils";
 
 export interface ITrait{
     id:number
@@ -8,25 +9,32 @@ export interface ITrait{
     name:string,
     url:string
 }
-export const getTraits = async (attributeId:number)=>{
-    const url = `${server}/traits/list/${attributeId}`
-    const res =  await fetch(url)
-    if( res.status>=300){
-        message.error('请求错误')
-        return
+export const getTraits = (params?:{attributeId?: number,chainId?:string})=>{
+    if(params?.attributeId&&params?.chainId){
+        const _params = new URLSearchParams(omitEmpty(params as unknown as Record<string, string>));
+        return  `${server}/traits/list?${_params}`
     }
-    const json = await res.json() as IResponse<ITrait[]>
-    if(json.code>=300){
-        message.error(json.msg)
-        return
-    }
-    return json.data;
+    //
+    // const url = `${server}/traits/list/${attributeId}`
+    // const res =  await fetch(url)
+    // if( res.status>=300){
+    //     message.error('请求错误')
+    //     return
+    // }
+    // const json = await res.json() as IResponse<ITrait[]>
+    // if(json.code>=300){
+    //     message.error(json.msg)
+    //     return
+    // }
+    // return json.data;
 }
 
 export interface IAddTraitRequest{
     attributeId:number,
     name:string
     url:string
+    contract:string
+    chainId:string
 }
 export const addTrait = async (params:IAddTraitRequest)=>{
     const url = `${server}/trait`
