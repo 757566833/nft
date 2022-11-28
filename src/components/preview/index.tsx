@@ -7,6 +7,7 @@ import CountProvider from "@/components/preview/context/count";
 import EditProvider from "@/components/preview/context/edit";
 import Download from "@/components/preview/download";
 import Upload from "@/components/preview/upload";
+import Batch from "@/components/preview/batch";
 
 export const Preview: React.FC = () => {
 
@@ -18,6 +19,7 @@ export const Preview: React.FC = () => {
                         <Filter/>
                         <Download/>
                         <Upload/>
+                        <Batch/>
                     </Stack>
                     <Box flex={1} padding={2}>
                         <List/>

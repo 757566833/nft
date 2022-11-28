@@ -13,7 +13,7 @@ import {Modal} from "@/lib/react-component";
 import {base642File, blob2File, message, uploadFormDataBuilder} from "@/lib/util";
 import {useWallet} from "@/context/wallet";
 import {IContract} from "@/services/contract";
-import {CURRENT_CONTRACT} from "@/constant";
+import {CURRENT_COLLECTION, CURRENT_CONTRACT} from "@/constant";
 import {LocalStorage} from "@/lib/react-context";
 import {ipfsUpload} from "@/services/upload";
 import {GetErc721} from "@/contract";
@@ -22,6 +22,7 @@ import {ethers} from "ethers";
 import {getFee} from "@/utils/fee";
 import Provider from "@/instance/provider";
 import {LoadingButton} from "@mui/lab";
+import {ICollection} from "@/services/collection";
 const {useLocalStorage} = LocalStorage
 
 interface AddressForm {
@@ -44,6 +45,7 @@ export const Upload: React.FC = () => {
     const [index,setIndex] = useState(0);
     const [progress ,setProgress] = useState(0)
     const [currentContract] = useLocalStorage<Record<number, IContract|null>>(CURRENT_CONTRACT,{})
+    const [currentCollection] = useLocalStorage<ICollection|null>(CURRENT_COLLECTION,null)
     const [loading,setLoading] = useState(false)
     const current = useMemo(() => {
         if (typeof chainId == "number") {
@@ -68,7 +70,7 @@ export const Upload: React.FC = () => {
                     const file = base642File(dataUrl,`${current?.name}${index}.png`)
                     if(file){
                         const builder = new uploadFormDataBuilder()
-                        const formData = builder.setFile(file).setFileName(file.name).build()
+                        const formData = builder.setFile(file).setFileName(file.name).setData("collection",currentCollection?.name).setData("name",file.name).build()
                         const res = await ipfsUpload(formData)
                         setProgress(25)
                         if(res){
@@ -84,9 +86,10 @@ export const Upload: React.FC = () => {
                             }
                             const str = JSON.stringify(json)
                             const blob = new Blob([str],{type:"application/json"})
-                            const metaData = blob2File(blob,'json','application/json','file.json')
+                            const [_name]=file.name.split(".")
+                            const metaData = blob2File(blob,'json','application/json',`${_name}.json`)
                             const builder = new uploadFormDataBuilder()
-                            const metaDataFormData = builder.setFile(metaData).setFileName(metaData.name).build()
+                            const metaDataFormData = builder.setFile(metaData).setFileName(metaData.name).setData("collection",currentCollection?.name).setData("name",metaData.name).build()
                             const metaDataRes = await ipfsUpload(metaDataFormData)
                             if(metaDataRes){
                                 setProgress(50)
@@ -118,7 +121,7 @@ export const Upload: React.FC = () => {
             }
 
         }
-    },[current?.address, current?.name, index, isEIP1559, preview])
+    },[current?.address, current?.name, currentCollection, index, isEIP1559, preview])
     const handleCancel = useCallback(()=>{
        setVisible(false)
     },[])

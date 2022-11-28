@@ -6,4 +6,6 @@ export const ACCOUNTS_CHANGED = 'accountsChanged'
 
 export const CURRENT_CONTRACT = "current_contract"
 
+export const CURRENT_COLLECTION = "current_collection"
+
 export const PREVIEW_COUNT = "preview_count"

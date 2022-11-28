@@ -3,6 +3,8 @@
 /* eslint-disable */
 import type * as interfaces from "./interfaces";
 export type { interfaces };
+export type { Erc1155 } from "./Erc1155";
 export type { Erc721 } from "./Erc721";
 export type { Erc721Factory } from "./Erc721Factory";
 export type { Lock } from "./Lock";
+export type { Robot } from "./Robot";

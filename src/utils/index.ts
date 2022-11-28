@@ -123,3 +123,6 @@ export const omitEmpty = (params?:Record<string, any>)=>{
     }
     return  _map
 }
+
+export const strToFloat = (s:string)=>Number.parseFloat(s)
+export const strToInt = (s:string)=>Number.parseInt(s)

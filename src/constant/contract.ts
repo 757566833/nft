@@ -1,4 +1,17 @@
-export const ERC721_FACTORY_CONTRACT_ADDRESS:Record<number, string>={
+export const ROBOT_CONTRACT_ADDRESS:Record<number, string>={
     31337:"0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    161229:"0x28C07160C10AB0668a292483Bc1372080D895C22"
+}
+export const NEXT_PUBLIC_EXPLORER:Record<number, string>={
+    31337:"",
+    161229:"https://bc.metamall.top"
+}
+export const NEXT_PUBLIC_ERC1155:Record<number, string>={
+    31337:"0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+    161229:"0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
+}
+
+export const ERC721_FACTORY_CONTRACT_ADDRESS:Record<number, string>={
+    31337:"0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
     161229:"0xB79AcFC9970563510817eD533247B2370dcF9CA8"
 }

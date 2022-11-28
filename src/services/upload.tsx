@@ -1,4 +1,5 @@
 import {IResponse, server} from "@/services/index";
+import {message} from "@/lib/util";
 
 const fileServer = process.env.NEXT_PUBLIC_FILE||''
 
@@ -16,5 +17,10 @@ export const ipfsUpload = async (formData:FormData)=>{
         method:"POST",
         body: formData,
     })
-    return await res.json() as IResponse<string>;
+    if(res.status<300){
+        return await res.json() as IResponse<string>;
+    }else{
+        message.error("error")
+    }
+
 }

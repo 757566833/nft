@@ -17,6 +17,26 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Ownable__factory>;
     getContractFactory(
+      name: "ERC1155",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC1155__factory>;
+    getContractFactory(
+      name: "ERC1155URIStorage",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC1155URIStorage__factory>;
+    getContractFactory(
+      name: "IERC1155MetadataURI",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC1155MetadataURI__factory>;
+    getContractFactory(
+      name: "IERC1155",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC1155__factory>;
+    getContractFactory(
+      name: "IERC1155Receiver",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC1155Receiver__factory>;
+    getContractFactory(
       name: "ERC721",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC721__factory>;
@@ -45,6 +65,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC165__factory>;
     getContractFactory(
+      name: "Erc1155",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Erc1155__factory>;
+    getContractFactory(
       name: "Erc721",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Erc721__factory>;
@@ -53,6 +77,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Erc721Factory__factory>;
     getContractFactory(
+      name: "IErc1155",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IErc1155__factory>;
+    getContractFactory(
       name: "IErc721",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IErc721__factory>;
@@ -60,12 +88,41 @@ declare module "hardhat/types/runtime" {
       name: "Lock",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Lock__factory>;
+    getContractFactory(
+      name: "Robot",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Robot__factory>;
 
     getContractAt(
       name: "Ownable",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Ownable>;
+    getContractAt(
+      name: "ERC1155",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC1155>;
+    getContractAt(
+      name: "ERC1155URIStorage",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC1155URIStorage>;
+    getContractAt(
+      name: "IERC1155MetadataURI",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC1155MetadataURI>;
+    getContractAt(
+      name: "IERC1155",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC1155>;
+    getContractAt(
+      name: "IERC1155Receiver",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC1155Receiver>;
     getContractAt(
       name: "ERC721",
       address: string,
@@ -102,6 +159,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IERC165>;
     getContractAt(
+      name: "Erc1155",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Erc1155>;
+    getContractAt(
       name: "Erc721",
       address: string,
       signer?: ethers.Signer
@@ -112,6 +174,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.Erc721Factory>;
     getContractAt(
+      name: "IErc1155",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IErc1155>;
+    getContractAt(
       name: "IErc721",
       address: string,
       signer?: ethers.Signer
@@ -121,6 +188,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Lock>;
+    getContractAt(
+      name: "Robot",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Robot>;
 
     // default types
     getContractFactory(

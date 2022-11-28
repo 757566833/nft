@@ -2,6 +2,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as interfaces from "./interfaces";
+export { Erc1155__factory } from "./Erc1155__factory";
 export { Erc721__factory } from "./Erc721__factory";
 export { Erc721Factory__factory } from "./Erc721Factory__factory";
 export { Lock__factory } from "./Lock__factory";
+export { Robot__factory } from "./Robot__factory";

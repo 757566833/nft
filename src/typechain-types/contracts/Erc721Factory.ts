@@ -4,7 +4,6 @@
 import type {
   BaseContract,
   BigNumber,
-  BigNumberish,
   BytesLike,
   CallOverrides,
   ContractTransaction,
@@ -29,41 +28,37 @@ import type {
 
 export interface Erc721FactoryInterface extends utils.Interface {
   functions: {
-    "allErc721(uint256)": FunctionFragment;
     "createErc721(string,string)": FunctionFragment;
+    "version()": FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: "allErc721" | "createErc721"
+    nameOrSignatureOrTopic: "createErc721" | "version"
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: "allErc721",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
   encodeFunctionData(
     functionFragment: "createErc721",
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(functionFragment: "version", values?: undefined): string;
 
-  decodeFunctionResult(functionFragment: "allErc721", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "createErc721",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 
   events: {
-    "Created(address,address)": EventFragment;
+    "Created(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Created"): EventFragment;
 }
 
 export interface CreatedEventObject {
-  sender: string;
   erc721: string;
 }
-export type CreatedEvent = TypedEvent<[string, string], CreatedEventObject>;
+export type CreatedEvent = TypedEvent<[string], CreatedEventObject>;
 
 export type CreatedEventFilter = TypedEventFilter<CreatedEvent>;
 
@@ -94,76 +89,57 @@ export interface Erc721Factory extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    allErc721(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
     createErc721(
-      name: PromiseOrValue<string>,
-      symbol: PromiseOrValue<string>,
+      _name: PromiseOrValue<string>,
+      _symbol: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    version(overrides?: CallOverrides): Promise<[string]>;
   };
 
-  allErc721(
-    arg0: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
   createErc721(
-    name: PromiseOrValue<string>,
-    symbol: PromiseOrValue<string>,
+    _name: PromiseOrValue<string>,
+    _symbol: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  version(overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
-    allErc721(
-      arg0: PromiseOrValue<BigNumberish>,
+    createErc721(
+      _name: PromiseOrValue<string>,
+      _symbol: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    createErc721(
-      name: PromiseOrValue<string>,
-      symbol: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    version(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
-    "Created(address,address)"(
-      sender?: PromiseOrValue<string> | null,
+    "Created(address)"(
       erc721?: PromiseOrValue<string> | null
     ): CreatedEventFilter;
-    Created(
-      sender?: PromiseOrValue<string> | null,
-      erc721?: PromiseOrValue<string> | null
-    ): CreatedEventFilter;
+    Created(erc721?: PromiseOrValue<string> | null): CreatedEventFilter;
   };
 
   estimateGas: {
-    allErc721(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     createErc721(
-      name: PromiseOrValue<string>,
-      symbol: PromiseOrValue<string>,
+      _name: PromiseOrValue<string>,
+      _symbol: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    version(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    allErc721(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     createErc721(
-      name: PromiseOrValue<string>,
-      symbol: PromiseOrValue<string>,
+      _name: PromiseOrValue<string>,
+      _symbol: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    version(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

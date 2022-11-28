@@ -6,9 +6,10 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import {Action} from "@/components/header/action";
 import {IContract} from "@/services/contract";
-import {CURRENT_CONTRACT} from "@/constant";
+import {CURRENT_COLLECTION, CURRENT_CONTRACT} from "@/constant";
 import {useWallet} from "@/context/wallet";
 import {LocalStorage} from "@/lib/react-context";
+import {ICollection} from "@/services/collection";
 const {useLocalStorage} = LocalStorage
 
 const Header:React.FC<{value:string,onChange:(value: string)=>void}> = (props)=>{
@@ -18,6 +19,7 @@ const Header:React.FC<{value:string,onChange:(value: string)=>void}> = (props)=>
     const handleChange = useCallback((_e: any, value: string) => {
         onChange(value)
     }, [onChange])
+    const [currentCollection] = useLocalStorage<ICollection|null>(CURRENT_COLLECTION,null)
     const [currentContract] = useLocalStorage<Record<number, IContract|null>>(CURRENT_CONTRACT,{})
     return <Box position={"sticky"} justifyContent={"space-between"} display={"flex"} alignItems={"center"} borderBottom={1} borderColor={'#888888'}>
         <Box flex={1} textAlign={"left"}>
@@ -40,6 +42,9 @@ const Header:React.FC<{value:string,onChange:(value: string)=>void}> = (props)=>
                 <Tab  iconPosition="start" label={<Stack direction={"row"} alignItems={"center"} spacing={1} ><ImageOutlinedIcon/><Box>Generate</Box></Stack>} value={"generate"}/>
                 <Tab  iconPosition="start" label={<Stack direction={"row"} alignItems={"center"} spacing={1} ><ImageOutlinedIcon/><Box>Market</Box></Stack>} value={"market"}/>
             </Tabs>
+        </Box>
+        <Box>
+            {currentCollection?.name}
         </Box>
         <Box flex={1} textAlign={"right"}>
             <Action/>
