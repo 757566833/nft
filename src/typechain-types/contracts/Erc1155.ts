@@ -9,7 +9,6 @@ import type {
   CallOverrides,
   ContractTransaction,
   Overrides,
-  PayableOverrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -32,8 +31,6 @@ export interface Erc1155Interface extends utils.Interface {
   functions: {
     "balanceOf(address,uint256)": FunctionFragment;
     "balanceOfBatch(address[],uint256[])": FunctionFragment;
-    "buy(string,string,address,address,uint256,uint256,string,string)": FunctionFragment;
-    "bytesToHex(bytes)": FunctionFragment;
     "getRobot()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "mint(address,uint256,string,string,uint256)": FunctionFragment;
@@ -42,6 +39,7 @@ export interface Erc1155Interface extends utils.Interface {
     "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "setURI(uint256,string)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "uri(uint256)": FunctionFragment;
@@ -52,8 +50,6 @@ export interface Erc1155Interface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "balanceOf"
       | "balanceOfBatch"
-      | "buy"
-      | "bytesToHex"
       | "getRobot"
       | "isApprovedForAll"
       | "mint"
@@ -62,6 +58,7 @@ export interface Erc1155Interface extends utils.Interface {
       | "safeBatchTransferFrom"
       | "safeTransferFrom"
       | "setApprovalForAll"
+      | "setURI"
       | "supportsInterface"
       | "transferOwnership"
       | "uri"
@@ -75,23 +72,6 @@ export interface Erc1155Interface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "balanceOfBatch",
     values: [PromiseOrValue<string>[], PromiseOrValue<BigNumberish>[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "buy",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "bytesToHex",
-    values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(functionFragment: "getRobot", values?: undefined): string;
   encodeFunctionData(
@@ -138,6 +118,10 @@ export interface Erc1155Interface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(
+    functionFragment: "setURI",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [PromiseOrValue<BytesLike>]
   ): string;
@@ -156,8 +140,6 @@ export interface Erc1155Interface extends utils.Interface {
     functionFragment: "balanceOfBatch",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "buy", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "bytesToHex", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getRobot", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
@@ -181,6 +163,7 @@ export interface Erc1155Interface extends utils.Interface {
     functionFragment: "setApprovalForAll",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setURI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -316,23 +299,6 @@ export interface Erc1155 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
 
-    buy(
-      orderId: PromiseOrValue<string>,
-      orderHash: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      tokenId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      tokenURI: PromiseOrValue<string>,
-      name: PromiseOrValue<string>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    bytesToHex(
-      buffer: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
     getRobot(overrides?: CallOverrides): Promise<[string]>;
 
     isApprovedForAll(
@@ -380,6 +346,12 @@ export interface Erc1155 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    setURI(
+      tokenId: PromiseOrValue<BigNumberish>,
+      tokenURI: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     supportsInterface(
       interfaceId: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -409,23 +381,6 @@ export interface Erc1155 extends BaseContract {
     ids: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
-
-  buy(
-    orderId: PromiseOrValue<string>,
-    orderHash: PromiseOrValue<string>,
-    from: PromiseOrValue<string>,
-    to: PromiseOrValue<string>,
-    tokenId: PromiseOrValue<BigNumberish>,
-    amount: PromiseOrValue<BigNumberish>,
-    tokenURI: PromiseOrValue<string>,
-    name: PromiseOrValue<string>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  bytesToHex(
-    buffer: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<string>;
 
   getRobot(overrides?: CallOverrides): Promise<string>;
 
@@ -474,6 +429,12 @@ export interface Erc1155 extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  setURI(
+    tokenId: PromiseOrValue<BigNumberish>,
+    tokenURI: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   supportsInterface(
     interfaceId: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
@@ -503,23 +464,6 @@ export interface Erc1155 extends BaseContract {
       ids: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
-
-    buy(
-      orderId: PromiseOrValue<string>,
-      orderHash: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      tokenId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      tokenURI: PromiseOrValue<string>,
-      name: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    bytesToHex(
-      buffer: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<string>;
 
     getRobot(overrides?: CallOverrides): Promise<string>;
 
@@ -563,6 +507,12 @@ export interface Erc1155 extends BaseContract {
     setApprovalForAll(
       operator: PromiseOrValue<string>,
       approved: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setURI(
+      tokenId: PromiseOrValue<BigNumberish>,
+      tokenURI: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -664,23 +614,6 @@ export interface Erc1155 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    buy(
-      orderId: PromiseOrValue<string>,
-      orderHash: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      tokenId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      tokenURI: PromiseOrValue<string>,
-      name: PromiseOrValue<string>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    bytesToHex(
-      buffer: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     getRobot(overrides?: CallOverrides): Promise<BigNumber>;
 
     isApprovedForAll(
@@ -728,6 +661,12 @@ export interface Erc1155 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    setURI(
+      tokenId: PromiseOrValue<BigNumberish>,
+      tokenURI: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     supportsInterface(
       interfaceId: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -756,23 +695,6 @@ export interface Erc1155 extends BaseContract {
     balanceOfBatch(
       accounts: PromiseOrValue<string>[],
       ids: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    buy(
-      orderId: PromiseOrValue<string>,
-      orderHash: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      tokenId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      tokenURI: PromiseOrValue<string>,
-      name: PromiseOrValue<string>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    bytesToHex(
-      buffer: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -820,6 +742,12 @@ export interface Erc1155 extends BaseContract {
     setApprovalForAll(
       operator: PromiseOrValue<string>,
       approved: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setURI(
+      tokenId: PromiseOrValue<BigNumberish>,
+      tokenURI: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

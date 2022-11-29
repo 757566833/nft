@@ -86,9 +86,9 @@ export const Batch: React.FC = () => {
                             if(res){
                                 const ipfsImage = `ipfs://${res.data}`
                                 const json = {
-                                    name:data.name,
+                                    name:data.name.replaceAll('${index}',`${(i+data.index)}`),
                                     image:ipfsImage,
-                                    description: data.description,
+                                    description: data.description.replaceAll('${index}',`${(i+data.index)}`),
                                     attributes:nft.map((item)=>({
                                         trait_type:item.attributeName,
                                         value:item.traitName
@@ -123,7 +123,8 @@ export const Batch: React.FC = () => {
                         gasLimit,
                         isEIP1559,
                     })
-                    await robot.batchMint721(current?.address,addresses,tokenURIs,collectionIds,fee)
+                    const r = await robot.batchMint721(current?.address,addresses,tokenURIs,collectionIds,fee)
+                    console.log( await r.wait())
                 }catch (e:any) {
                     message.error(e.reason)
                 }finally {

@@ -9,7 +9,6 @@ import type {
   CallOverrides,
   ContractTransaction,
   Overrides,
-  PayableOverrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -32,20 +31,18 @@ export interface Erc721Interface extends utils.Interface {
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
-    "buy(uint256,address)": FunctionFragment;
-    "cancelSell(uint256)": FunctionFragment;
+    "currentId()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "initialize(string,string,string)": FunctionFragment;
+    "getRobot()": FunctionFragment;
+    "initialize(string,string,string,address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mint(address,string,string,address)": FunctionFragment;
+    "mint(address,string)": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
-    "ownerOfTokenId(uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,bytes)": FunctionFragment;
-    "sell(uint256,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
@@ -60,20 +57,18 @@ export interface Erc721Interface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "approve"
       | "balanceOf"
-      | "buy"
-      | "cancelSell"
+      | "currentId"
       | "getApproved"
+      | "getRobot"
       | "initialize"
       | "isApprovedForAll"
       | "mint"
       | "name"
       | "owner"
       | "ownerOf"
-      | "ownerOfTokenId"
       | "renounceOwnership"
       | "safeTransferFrom(address,address,uint256)"
       | "safeTransferFrom(address,address,uint256,bytes)"
-      | "sell"
       | "setApprovalForAll"
       | "supportsInterface"
       | "symbol"
@@ -92,21 +87,16 @@ export interface Erc721Interface extends utils.Interface {
     functionFragment: "balanceOf",
     values: [PromiseOrValue<string>]
   ): string;
-  encodeFunctionData(
-    functionFragment: "buy",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "cancelSell",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
+  encodeFunctionData(functionFragment: "currentId", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
+  encodeFunctionData(functionFragment: "getRobot", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initialize",
     values: [
+      PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<string>
@@ -118,21 +108,12 @@ export interface Erc721Interface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "mint",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "ownerOfTokenId",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
@@ -155,10 +136,6 @@ export interface Erc721Interface extends utils.Interface {
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BytesLike>
     ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "sell",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "setApprovalForAll",
@@ -193,12 +170,12 @@ export interface Erc721Interface extends utils.Interface {
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "buy", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "cancelSell", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "currentId", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getRobot", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
@@ -208,10 +185,6 @@ export interface Erc721Interface extends utils.Interface {
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "ownerOfTokenId",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
@@ -224,7 +197,6 @@ export interface Erc721Interface extends utils.Interface {
     functionFragment: "safeTransferFrom(address,address,uint256,bytes)",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "sell", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setApprovalForAll",
     data: BytesLike
@@ -252,21 +224,13 @@ export interface Erc721Interface extends utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
-    "CancelSell(uint256,uint8)": EventFragment;
-    "Creator(address,uint8)": EventFragment;
-    "Mint(uint256,string,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
-    "Sell(uint256,uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "CancelSell"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Creator"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Mint"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Sell"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
@@ -294,37 +258,6 @@ export type ApprovalForAllEvent = TypedEvent<
 
 export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
 
-export interface CancelSellEventObject {
-  tokenId: BigNumber;
-  status: number;
-}
-export type CancelSellEvent = TypedEvent<
-  [BigNumber, number],
-  CancelSellEventObject
->;
-
-export type CancelSellEventFilter = TypedEventFilter<CancelSellEvent>;
-
-export interface CreatorEventObject {
-  account: string;
-  rate: number;
-}
-export type CreatorEvent = TypedEvent<[string, number], CreatorEventObject>;
-
-export type CreatorEventFilter = TypedEventFilter<CreatorEvent>;
-
-export interface MintEventObject {
-  tokenId: BigNumber;
-  collectionId: string;
-  createBy: string;
-}
-export type MintEvent = TypedEvent<
-  [BigNumber, string, string],
-  MintEventObject
->;
-
-export type MintEventFilter = TypedEventFilter<MintEvent>;
-
 export interface OwnershipTransferredEventObject {
   previousOwner: string;
   newOwner: string;
@@ -336,14 +269,6 @@ export type OwnershipTransferredEvent = TypedEvent<
 
 export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
-
-export interface SellEventObject {
-  tokenId: BigNumber;
-  price: BigNumber;
-}
-export type SellEvent = TypedEvent<[BigNumber, BigNumber], SellEventObject>;
-
-export type SellEventFilter = TypedEventFilter<SellEvent>;
 
 export interface TransferEventObject {
   from: string;
@@ -395,31 +320,25 @@ export interface Erc721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    buy(
-      tokenId: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    cancelSell(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    currentId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    getRobot(overrides?: CallOverrides): Promise<[string]>;
+
     initialize(
       _name: PromiseOrValue<string>,
       _symbol: PromiseOrValue<string>,
       _verison: PromiseOrValue<string>,
+      _robot: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     isApprovedForAll(
-      owner: PromiseOrValue<string>,
+      account: PromiseOrValue<string>,
       operator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
@@ -427,8 +346,6 @@ export interface Erc721 extends BaseContract {
     mint(
       account: PromiseOrValue<string>,
       tokenURI: PromiseOrValue<string>,
-      collectionId: PromiseOrValue<string>,
-      createBy: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -440,11 +357,6 @@ export interface Erc721 extends BaseContract {
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string]>;
-
-    ownerOfTokenId(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string] & { owner: string }>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -462,12 +374,6 @@ export interface Erc721 extends BaseContract {
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    sell(
-      tokenId: PromiseOrValue<BigNumberish>,
-      price: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -520,31 +426,25 @@ export interface Erc721 extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  buy(
-    tokenId: PromiseOrValue<BigNumberish>,
-    to: PromiseOrValue<string>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  cancelSell(
-    tokenId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  currentId(overrides?: CallOverrides): Promise<BigNumber>;
 
   getApproved(
     tokenId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<string>;
 
+  getRobot(overrides?: CallOverrides): Promise<string>;
+
   initialize(
     _name: PromiseOrValue<string>,
     _symbol: PromiseOrValue<string>,
     _verison: PromiseOrValue<string>,
+    _robot: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   isApprovedForAll(
-    owner: PromiseOrValue<string>,
+    account: PromiseOrValue<string>,
     operator: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<boolean>;
@@ -552,8 +452,6 @@ export interface Erc721 extends BaseContract {
   mint(
     account: PromiseOrValue<string>,
     tokenURI: PromiseOrValue<string>,
-    collectionId: PromiseOrValue<string>,
-    createBy: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -562,11 +460,6 @@ export interface Erc721 extends BaseContract {
   owner(overrides?: CallOverrides): Promise<string>;
 
   ownerOf(
-    tokenId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  ownerOfTokenId(
     tokenId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<string>;
@@ -587,12 +480,6 @@ export interface Erc721 extends BaseContract {
     to: PromiseOrValue<string>,
     tokenId: PromiseOrValue<BigNumberish>,
     data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  sell(
-    tokenId: PromiseOrValue<BigNumberish>,
-    price: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -645,31 +532,25 @@ export interface Erc721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    buy(
-      tokenId: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    cancelSell(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    currentId(overrides?: CallOverrides): Promise<BigNumber>;
 
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
 
+    getRobot(overrides?: CallOverrides): Promise<string>;
+
     initialize(
       _name: PromiseOrValue<string>,
       _symbol: PromiseOrValue<string>,
       _verison: PromiseOrValue<string>,
+      _robot: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     isApprovedForAll(
-      owner: PromiseOrValue<string>,
+      account: PromiseOrValue<string>,
       operator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -677,21 +558,14 @@ export interface Erc721 extends BaseContract {
     mint(
       account: PromiseOrValue<string>,
       tokenURI: PromiseOrValue<string>,
-      collectionId: PromiseOrValue<string>,
-      createBy: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<void>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
     ownerOf(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    ownerOfTokenId(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
@@ -710,12 +584,6 @@ export interface Erc721 extends BaseContract {
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    sell(
-      tokenId: PromiseOrValue<BigNumberish>,
-      price: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -780,35 +648,6 @@ export interface Erc721 extends BaseContract {
       approved?: null
     ): ApprovalForAllEventFilter;
 
-    "CancelSell(uint256,uint8)"(
-      tokenId?: PromiseOrValue<BigNumberish> | null,
-      status?: PromiseOrValue<BigNumberish> | null
-    ): CancelSellEventFilter;
-    CancelSell(
-      tokenId?: PromiseOrValue<BigNumberish> | null,
-      status?: PromiseOrValue<BigNumberish> | null
-    ): CancelSellEventFilter;
-
-    "Creator(address,uint8)"(
-      account?: PromiseOrValue<string> | null,
-      rate?: PromiseOrValue<BigNumberish> | null
-    ): CreatorEventFilter;
-    Creator(
-      account?: PromiseOrValue<string> | null,
-      rate?: PromiseOrValue<BigNumberish> | null
-    ): CreatorEventFilter;
-
-    "Mint(uint256,string,address)"(
-      tokenId?: PromiseOrValue<BigNumberish> | null,
-      collectionId?: PromiseOrValue<string> | null,
-      createBy?: PromiseOrValue<string> | null
-    ): MintEventFilter;
-    Mint(
-      tokenId?: PromiseOrValue<BigNumberish> | null,
-      collectionId?: PromiseOrValue<string> | null,
-      createBy?: PromiseOrValue<string> | null
-    ): MintEventFilter;
-
     "OwnershipTransferred(address,address)"(
       previousOwner?: PromiseOrValue<string> | null,
       newOwner?: PromiseOrValue<string> | null
@@ -817,15 +656,6 @@ export interface Erc721 extends BaseContract {
       previousOwner?: PromiseOrValue<string> | null,
       newOwner?: PromiseOrValue<string> | null
     ): OwnershipTransferredEventFilter;
-
-    "Sell(uint256,uint256)"(
-      tokenId?: PromiseOrValue<BigNumberish> | null,
-      price?: PromiseOrValue<BigNumberish> | null
-    ): SellEventFilter;
-    Sell(
-      tokenId?: PromiseOrValue<BigNumberish> | null,
-      price?: PromiseOrValue<BigNumberish> | null
-    ): SellEventFilter;
 
     "Transfer(address,address,uint256)"(
       from?: PromiseOrValue<string> | null,
@@ -851,31 +681,25 @@ export interface Erc721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    buy(
-      tokenId: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    cancelSell(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    currentId(overrides?: CallOverrides): Promise<BigNumber>;
 
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getRobot(overrides?: CallOverrides): Promise<BigNumber>;
+
     initialize(
       _name: PromiseOrValue<string>,
       _symbol: PromiseOrValue<string>,
       _verison: PromiseOrValue<string>,
+      _robot: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     isApprovedForAll(
-      owner: PromiseOrValue<string>,
+      account: PromiseOrValue<string>,
       operator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -883,8 +707,6 @@ export interface Erc721 extends BaseContract {
     mint(
       account: PromiseOrValue<string>,
       tokenURI: PromiseOrValue<string>,
-      collectionId: PromiseOrValue<string>,
-      createBy: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -893,11 +715,6 @@ export interface Erc721 extends BaseContract {
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     ownerOf(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    ownerOfTokenId(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -918,12 +735,6 @@ export interface Erc721 extends BaseContract {
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    sell(
-      tokenId: PromiseOrValue<BigNumberish>,
-      price: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -977,31 +788,25 @@ export interface Erc721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    buy(
-      tokenId: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    cancelSell(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    currentId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getRobot(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     initialize(
       _name: PromiseOrValue<string>,
       _symbol: PromiseOrValue<string>,
       _verison: PromiseOrValue<string>,
+      _robot: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     isApprovedForAll(
-      owner: PromiseOrValue<string>,
+      account: PromiseOrValue<string>,
       operator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1009,8 +814,6 @@ export interface Erc721 extends BaseContract {
     mint(
       account: PromiseOrValue<string>,
       tokenURI: PromiseOrValue<string>,
-      collectionId: PromiseOrValue<string>,
-      createBy: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1019,11 +822,6 @@ export interface Erc721 extends BaseContract {
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     ownerOf(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    ownerOfTokenId(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1044,12 +842,6 @@ export interface Erc721 extends BaseContract {
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    sell(
-      tokenId: PromiseOrValue<BigNumberish>,
-      price: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

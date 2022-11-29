@@ -32,7 +32,10 @@ export interface RobotInterface extends utils.Interface {
   functions: {
     "batchAll(address[],uint256[],string[],string[],address[],address[],uint256[],uint256[],string[],string[],uint256[])": FunctionFragment;
     "batchLockt1155(address,address[],uint256[],string[],string[],uint256[])": FunctionFragment;
-    "batchMint721(address,address[],string[],string[])": FunctionFragment;
+    "batchMint721(address,address[],string[],uint256[])": FunctionFragment;
+    "bytesToHex(bytes)": FunctionFragment;
+    "cancelSell(address,uint256)": FunctionFragment;
+    "sell(address,uint256,uint256)": FunctionFragment;
     "version()": FunctionFragment;
   };
 
@@ -41,6 +44,9 @@ export interface RobotInterface extends utils.Interface {
       | "batchAll"
       | "batchLockt1155"
       | "batchMint721"
+      | "bytesToHex"
+      | "cancelSell"
+      | "sell"
       | "version"
   ): FunctionFragment;
 
@@ -77,7 +83,23 @@ export interface RobotInterface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<string>[],
       PromiseOrValue<string>[],
-      PromiseOrValue<string>[]
+      PromiseOrValue<BigNumberish>[]
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "bytesToHex",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "cancelSell",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "sell",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
     ]
   ): string;
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
@@ -91,15 +113,24 @@ export interface RobotInterface extends utils.Interface {
     functionFragment: "batchMint721",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "bytesToHex", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "cancelSell", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "sell", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 
   events: {
     "Buy(address,uint256,uint256,address,address,uint256,uint256)": EventFragment;
-    "Lock(address,string,string,address,uint256,uint256)": EventFragment;
+    "CancelSell721(address,uint256)": EventFragment;
+    "Lock1155(uint256)": EventFragment;
+    "Mint721(address,uint256,uint256,address,address)": EventFragment;
+    "Sell721(address,uint256,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Buy"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Lock"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "CancelSell721"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Lock1155"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Mint721"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Sell721"): EventFragment;
 }
 
 export interface BuyEventObject {
@@ -118,20 +149,49 @@ export type BuyEvent = TypedEvent<
 
 export type BuyEventFilter = TypedEventFilter<BuyEvent>;
 
-export interface LockEventObject {
-  contractAddress: string;
-  name: string;
-  tokenURI: string;
-  to: string;
+export interface CancelSell721EventObject {
+  c: string;
   tokenId: BigNumber;
-  amount: BigNumber;
 }
-export type LockEvent = TypedEvent<
-  [string, string, string, string, BigNumber, BigNumber],
-  LockEventObject
+export type CancelSell721Event = TypedEvent<
+  [string, BigNumber],
+  CancelSell721EventObject
 >;
 
-export type LockEventFilter = TypedEventFilter<LockEvent>;
+export type CancelSell721EventFilter = TypedEventFilter<CancelSell721Event>;
+
+export interface Lock1155EventObject {
+  tokenId: BigNumber;
+}
+export type Lock1155Event = TypedEvent<[BigNumber], Lock1155EventObject>;
+
+export type Lock1155EventFilter = TypedEventFilter<Lock1155Event>;
+
+export interface Mint721EventObject {
+  c: string;
+  tokenId: BigNumber;
+  collectionId: BigNumber;
+  createBy: string;
+  to: string;
+}
+export type Mint721Event = TypedEvent<
+  [string, BigNumber, BigNumber, string, string],
+  Mint721EventObject
+>;
+
+export type Mint721EventFilter = TypedEventFilter<Mint721Event>;
+
+export interface Sell721EventObject {
+  c: string;
+  tokenId: BigNumber;
+  price: BigNumber;
+}
+export type Sell721Event = TypedEvent<
+  [string, BigNumber, BigNumber],
+  Sell721EventObject
+>;
+
+export type Sell721EventFilter = TypedEventFilter<Sell721Event>;
 
 export interface Robot extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -189,7 +249,25 @@ export interface Robot extends BaseContract {
       erc721: PromiseOrValue<string>,
       accounts: PromiseOrValue<string>[],
       tokenURIs: PromiseOrValue<string>[],
-      collectionIds: PromiseOrValue<string>[],
+      collectionIds: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    bytesToHex(
+      buffer: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
+    cancelSell(
+      c: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    sell(
+      c: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
+      price: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -225,7 +303,25 @@ export interface Robot extends BaseContract {
     erc721: PromiseOrValue<string>,
     accounts: PromiseOrValue<string>[],
     tokenURIs: PromiseOrValue<string>[],
-    collectionIds: PromiseOrValue<string>[],
+    collectionIds: PromiseOrValue<BigNumberish>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  bytesToHex(
+    buffer: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  cancelSell(
+    c: PromiseOrValue<string>,
+    tokenId: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  sell(
+    c: PromiseOrValue<string>,
+    tokenId: PromiseOrValue<BigNumberish>,
+    price: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -261,7 +357,25 @@ export interface Robot extends BaseContract {
       erc721: PromiseOrValue<string>,
       accounts: PromiseOrValue<string>[],
       tokenURIs: PromiseOrValue<string>[],
-      collectionIds: PromiseOrValue<string>[],
+      collectionIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    bytesToHex(
+      buffer: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    cancelSell(
+      c: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    sell(
+      c: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
+      price: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -288,22 +402,47 @@ export interface Robot extends BaseContract {
       price?: null
     ): BuyEventFilter;
 
-    "Lock(address,string,string,address,uint256,uint256)"(
-      contractAddress?: PromiseOrValue<string> | null,
-      name?: PromiseOrValue<string> | null,
-      tokenURI?: PromiseOrValue<string> | null,
-      to?: null,
-      tokenId?: null,
-      amount?: null
-    ): LockEventFilter;
-    Lock(
-      contractAddress?: PromiseOrValue<string> | null,
-      name?: PromiseOrValue<string> | null,
-      tokenURI?: PromiseOrValue<string> | null,
-      to?: null,
-      tokenId?: null,
-      amount?: null
-    ): LockEventFilter;
+    "CancelSell721(address,uint256)"(
+      c?: null,
+      tokenId?: PromiseOrValue<BigNumberish> | null
+    ): CancelSell721EventFilter;
+    CancelSell721(
+      c?: null,
+      tokenId?: PromiseOrValue<BigNumberish> | null
+    ): CancelSell721EventFilter;
+
+    "Lock1155(uint256)"(
+      tokenId?: PromiseOrValue<BigNumberish> | null
+    ): Lock1155EventFilter;
+    Lock1155(
+      tokenId?: PromiseOrValue<BigNumberish> | null
+    ): Lock1155EventFilter;
+
+    "Mint721(address,uint256,uint256,address,address)"(
+      c?: PromiseOrValue<string> | null,
+      tokenId?: PromiseOrValue<BigNumberish> | null,
+      collectionId?: PromiseOrValue<BigNumberish> | null,
+      createBy?: null,
+      to?: null
+    ): Mint721EventFilter;
+    Mint721(
+      c?: PromiseOrValue<string> | null,
+      tokenId?: PromiseOrValue<BigNumberish> | null,
+      collectionId?: PromiseOrValue<BigNumberish> | null,
+      createBy?: null,
+      to?: null
+    ): Mint721EventFilter;
+
+    "Sell721(address,uint256,uint256)"(
+      c?: null,
+      tokenId?: PromiseOrValue<BigNumberish> | null,
+      price?: PromiseOrValue<BigNumberish> | null
+    ): Sell721EventFilter;
+    Sell721(
+      c?: null,
+      tokenId?: PromiseOrValue<BigNumberish> | null,
+      price?: PromiseOrValue<BigNumberish> | null
+    ): Sell721EventFilter;
   };
 
   estimateGas: {
@@ -336,7 +475,25 @@ export interface Robot extends BaseContract {
       erc721: PromiseOrValue<string>,
       accounts: PromiseOrValue<string>[],
       tokenURIs: PromiseOrValue<string>[],
-      collectionIds: PromiseOrValue<string>[],
+      collectionIds: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    bytesToHex(
+      buffer: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    cancelSell(
+      c: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    sell(
+      c: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
+      price: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -373,7 +530,25 @@ export interface Robot extends BaseContract {
       erc721: PromiseOrValue<string>,
       accounts: PromiseOrValue<string>[],
       tokenURIs: PromiseOrValue<string>[],
-      collectionIds: PromiseOrValue<string>[],
+      collectionIds: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    bytesToHex(
+      buffer: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    cancelSell(
+      c: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    sell(
+      c: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
+      price: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
