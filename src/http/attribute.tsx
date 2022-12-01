@@ -10,8 +10,7 @@ import {
 import {useCallback} from "react";
 import {Http} from "@/services";
 
-export const ATTRIBUTES = 'attributes'
-export const useAttributes = (params?:{contract?: string,chainId?:string})=>{
+export const useAttributes = (params?:{contractId?: number})=>{
     return  useSWR<IAttribute[]>(getAttributes(params),Http.Get)
 }
 export const useAttribute = ()=>{
@@ -25,7 +24,7 @@ export const useAddAttribute = ()=>{
    const add = useCallback(async (params:Omit<IAttributeRequest, 'id'>)=>{
        const res = await addAttribute(params);
        if(res){
-           await mutate(`${ATTRIBUTES}${params.contract}`)
+           await mutate(getAttributes({contractId:params.contractId}))
            return res
        }
    },[mutate])
@@ -38,7 +37,7 @@ export const useEditAttribute = ()=>{
     const add = useCallback(async (params:IAttributeRequest)=>{
         const res = await editAttribute(params);
         if(res){
-            await mutate(`${ATTRIBUTES}${params.contract}`)
+            await mutate(getAttributes({contractId:params.contractId}))
             return res
         }
     },[mutate])

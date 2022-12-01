@@ -174,7 +174,7 @@ export const Upload: React.FC = () => {
             </Stack>
         </Modal>
        <Box hidden={preview.length==0}>
-           <Button variant={'contained'} fullWidth={true} onClick={handleDownload}>upload</Button>
+           <Button variant={'contained'} disabled={!currentCollection||!current?.address} fullWidth={true} onClick={handleDownload}>upload</Button>
        </Box>
     </>
 }

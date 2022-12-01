@@ -21,7 +21,7 @@ export const Filter:React.FC = ()=>{
         }
         return
     }, [chainId, currentContract])
-    const {data} = useAttributes({contract:current?.address,chainId:chainId?.toString()})
+    const {data} = useAttributes({contractId:current?.id})
     const [preview] = usePreview();
     return <Box border={"1px solid #dde3e7"} hidden={preview.length==0}>
 

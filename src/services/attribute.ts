@@ -24,8 +24,8 @@ export const getAttribute = async (id:number)=>{
     return json.data;
 }
 
-export const getAttributes = (params?:{contract?: string,chainId?:string})=>{
-    if(params?.contract&&params?.chainId){
+export const getAttributes = (params?:{contractId?: number})=>{
+    if(params?.contractId){
         const _params = new URLSearchParams(omitEmpty(params as unknown as Record<string, string>));
         // console.log(`${server}/attributes/list?${_params}`)
         return  `${server}/attributes/list?${_params}`
@@ -35,8 +35,7 @@ export interface IAttributeRequest{
     id:number
     name:string,
     zIndex:number
-    contract:string
-    chainId:string
+    contractId:number
 }
 
 export const addAttribute = async (params:Omit<IAttributeRequest, 'id'>)=>{

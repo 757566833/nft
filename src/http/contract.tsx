@@ -1,7 +1,8 @@
 
 import {useCallback} from "react";
-import {contractSync, getContracts, getContractsByChainId, IContractSync} from "@/services/contract";
+import {contractSync, createContract, getContracts, getContractsByChainId, IContractSync} from "@/services/contract";
 import useSWR from "swr";
+import {useLoading} from "@/lib/react-hook";
 
 export const CONTRACT = 'contract'
 export const useContracts = (chainId?:number)=>{
@@ -28,3 +29,6 @@ export const useSyncContract = ()=>{
     return [add]
 }
 
+export  const useCreateContract = ()=>{
+    return useLoading(createContract);
+}

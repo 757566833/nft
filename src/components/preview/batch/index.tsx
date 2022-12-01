@@ -246,7 +246,7 @@ export const Batch: React.FC = () => {
             </Stack>
         </Modal>
        <Box hidden={preview.length==0}>
-           <Button variant={'contained'} fullWidth={true} onClick={handleDownload}>batch upload</Button>
+           <Button variant={'contained'} disabled={!currentCollection||!current?.address} fullWidth={true} onClick={handleDownload}>batch upload</Button>
        </Box>
     </>
 }

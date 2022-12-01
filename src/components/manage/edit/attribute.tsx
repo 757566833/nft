@@ -44,7 +44,7 @@ const EditAttribute:React.FC<{id?:number,onFinish:()=>void,visible:boolean,onCan
                 ...data,
                 zIndex:Number.parseInt(`${data.zIndex}`),
                 id,
-                contract:current.address
+                contractId:current.id
             })
             if(res){
                 onFinish()

@@ -45,8 +45,7 @@ const AddAttribute: React.FC<{ onFinish: () => void }> = (props) => {
             const res = await addAttribute({
                 ...data,
                 zIndex: Number.parseInt(`${data.zIndex}`),
-                contract:current.address,
-                chainId:chainId?.toString()
+                contractId:current.id,
             })
             setAddVisible(false)
             if (res) {

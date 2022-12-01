@@ -25,7 +25,7 @@ const Header:React.FC<{value:string,onChange:(value: string)=>void}> = (props)=>
         <Box flex={1} textAlign={"left"}>
             <Box paddingLeft={1}>
                 <Typography>
-                    {currentContract[chainId||0]?.address||''}
+                    {currentContract[chainId||0]?.name||''}
                 </Typography>
             </Box>
 
