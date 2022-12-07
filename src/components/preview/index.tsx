@@ -14,7 +14,7 @@ export const Preview: React.FC = () => {
     return <FilterProvider>
         <CountProvider>
             <EditProvider>
-                <Box display={"flex"}>
+                <Box display={"flex"} height={'100%'}>
                     <Stack width={240} padding={2} spacing={3}>
                         <Filter/>
                         <Download/>

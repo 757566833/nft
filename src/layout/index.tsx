@@ -3,7 +3,7 @@ import {Box} from "@mui/material";
 
 export const Layout:React.FC<PropsWithChildren> = (props)=>{
 
-    return <Box bgcolor={theme=>theme.palette.background.default} height={'100%'} width={'100%'} overflow={"auto"}>
+    return <Box bgcolor={theme=>theme.palette.background.default} height={'100%'} width={'100%'} overflow={"auto"} >
         {props.children}
     </Box>
 }
