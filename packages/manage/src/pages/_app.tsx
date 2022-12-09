@@ -3,9 +3,9 @@ import {CacheProvider} from '@emotion/react';
 import Head from 'next/head';
 import Router from "next/router";
 import CssBaseline from '@mui/material/CssBaseline';
-import createEmotionCache from "src/config/createEmotionCache";
+import createEmotionCache from "@/config/createEmotionCache";
 import {EmotionCache} from "@emotion/utils";
-import Layout from "src/layout";
+import Layout from "@/layout";
 import React, {PropsWithChildren, useCallback, useMemo} from "react";
 import '@/styles/global.css'
 import "nprogress/nprogress.css"
@@ -15,7 +15,7 @@ import dynamic from "next/dynamic";
 import {GlobalStyles} from "@/lib/style";
 
 const clientSideEmotionCache = createEmotionCache();
-const DynamicRender = dynamic<any>(() => import('src/context'), {
+const DynamicRender = dynamic<any>(() => import('@/context'), {
     ssr: false,
 })
 

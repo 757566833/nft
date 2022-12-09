@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useIsomorphicLayoutEffect} from 'src/lib/react-hook/useIsomorphicLayoutEffect';
+import {useIsomorphicLayoutEffect} from '../useIsomorphicLayoutEffect';
 
 export const useRaf = (ms: number = 1e12, delay: number = 0): number => {
   const [elapsed, set] = React.useState<number>(0);

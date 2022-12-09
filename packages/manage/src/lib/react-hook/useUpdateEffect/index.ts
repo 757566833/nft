@@ -1,6 +1,6 @@
 
 import * as React from 'react';
-import {useFirstMountState} from 'src/lib/react-hook/useFirstMountState';
+import {useFirstMountState} from '../useFirstMountState';
 
 export const useUpdateEffect: typeof React.useEffect = (effect, deps) => {
   const isFirstMount = useFirstMountState();

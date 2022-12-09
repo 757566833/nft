@@ -1,6 +1,6 @@
 
-import createTextIcon from 'src/lib/util/create-icon';
-import {EEnv, Env} from 'src/lib/util/env';
+import createTextIcon from '../create-icon';
+import {EEnv, Env} from '../env';
 export interface IPanelParams{
     title?:string;
     onOk?:()=>void

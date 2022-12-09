@@ -1,4 +1,4 @@
-import {verificationMail} from 'src/lib/util/verification/item';
+import {verificationMail} from './item';
 
 /**
  * 验证的方法，最终导出的class

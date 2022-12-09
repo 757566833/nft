@@ -1,4 +1,4 @@
-import {LocalStorageProvider, useLocalStorage} from 'src/lib/react-context/localStorage/context';
+import {LocalStorageProvider, useLocalStorage} from './context';
 
 /**
  * LocalStorage整体导出的class

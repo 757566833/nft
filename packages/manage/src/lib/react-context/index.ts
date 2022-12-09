@@ -1,1 +1,1 @@
-export * from 'src/lib/react-context/localStorage';
+export * from './localStorage';

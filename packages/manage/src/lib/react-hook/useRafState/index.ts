@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import {useUnmount} from 'src/lib/react-hook/useUnmount';
+import {useUnmount} from '../useUnmount';
 
 export const useRafState = <S>(initialState: S | (() => S)): [S, React.Dispatch<React.SetStateAction<S>>] => {
   const frame = React.useRef(0);

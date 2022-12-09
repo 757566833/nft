@@ -1,6 +1,6 @@
-import {EEnv, Env} from 'src/lib/util/env';
-import {insertCss} from "@/lib/util/_util";
-import {createIcon} from "@/lib/util";
+import {EEnv, Env} from '../env';
+import {insertCss} from "../_util";
+import {createIcon} from "..";
 
 export interface INotificationParams {
     message?: string;

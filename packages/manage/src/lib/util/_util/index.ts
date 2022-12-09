@@ -1,5 +1,5 @@
-import {Env} from 'src/lib/util/env';
-import {css} from 'src/lib/util/create-icon';
+import {Env} from '../env';
+import {css} from '../create-icon';
 
 /**
  * 异步导入css  存放数据的地方

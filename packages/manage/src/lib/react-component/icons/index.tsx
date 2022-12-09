@@ -1,5 +1,5 @@
-import {SaveIcon} from 'src/lib/react-component/icons/save';
-import {UploadImageIcon} from 'src/lib/react-component/icons/uploadImage';
+import {SaveIcon} from './save';
+import {UploadImageIcon} from './uploadImage';
 
 /**
  * icon 整体导出的class

@@ -1,6 +1,6 @@
 import {AttributesRefValue} from "@/components/manage/attributes";
 import {PreviewItem, PreviewList} from "@/context/preview";
-import {number} from "prop-types";
+import {batch_shuffle} from 'wasm'
 
 /**
  * 引用传递，会改变传进来的数组
@@ -40,47 +40,82 @@ export const func: (source: AttributesRefValue,count:number) => PreviewList = (s
                 currentArray = [...currentArray,...new Array(value).fill(i2)]
             }
         }
-        indexList[i1] = currentArray
-    }
-
-
-
-    for (const sourceElement of source) {
-        const traits = sourceElement.traits || []
-
-        let currentArray:PreviewItem = [];
-        for (const trait of traits) {
-            if (trait.value) {
-                currentArray = [...currentArray, ...new Array(trait.value).fill({
-                    attributeId: trait.attributeId,
-                    attributeName:trait.attributeName,
-                    traitId: trait.traitId,
-                    traitName: trait.name,
-                    url: trait.url
-                })]
-            }
-
-        }
         while (currentArray.length < count) {
             currentArray = [...currentArray, ...currentArray]
         }
-        shuffle(currentArray)
-        for (let i = 0; i < count; i++) {
-            if (result[i]) {
-                result[i].push({
-                    ...currentArray[i],
-                    zIndex: sourceElement.zIndex
-                })
-            } else {
-                result[i] = [{
-                    ...currentArray[i],
-                    zIndex: sourceElement.zIndex
-                }]
+        indexList[i1] = currentArray
+    }
+    const params = JSON.stringify(indexList)
+    const res = batch_shuffle(params)
+    const s:number[][] = JSON.parse(res)
+
+    for (let i1 = 0; i1 < source.length; i1++) {
+        const element = source[i1];
+
+        for (let i2 = 0; i2 < count; i2++) {
+            const trait = element.traits?.[s[i1][i2]]
+            if(trait){
+                if (result[i2]) {
+                    result[i2].push({
+                        attributeId: trait.attributeId,
+                        attributeName:trait.attributeName,
+                        traitId: trait.traitId,
+                        traitName: trait.name,
+                        url: trait.url,
+                        zIndex: element.zIndex
+                    })
+                } else {
+                    result[i2] = [{
+                        attributeId: trait.attributeId,
+                        attributeName:trait.attributeName,
+                        traitId: trait.traitId,
+                        traitName: trait.name,
+                        url: trait.url,
+                        zIndex: element.zIndex
+                    }]
+                }
             }
 
-        }
 
+        }
     }
+    //
+    // for (const sourceElement of source) {
+    //     const traits = sourceElement.traits || []
+    //
+    //     let currentArray:PreviewItem = [];
+    //     for (const trait of traits) {
+    //         if (trait.value) {
+    //             currentArray = [...currentArray, ...new Array(trait.value).fill({
+    //                 attributeId: trait.attributeId,
+    //                 attributeName:trait.attributeName,
+    //                 traitId: trait.traitId,
+    //                 traitName: trait.name,
+    //                 url: trait.url
+    //             })]
+    //         }
+    //
+    //     }
+    //     while (currentArray.length < count) {
+    //         currentArray = [...currentArray, ...currentArray]
+    //     }
+    //     shuffle(currentArray)
+    //     for (let i = 0; i < count; i++) {
+    //         if (result[i]) {
+    //             result[i].push({
+    //                 ...currentArray[i],
+    //                 zIndex: sourceElement.zIndex
+    //             })
+    //         } else {
+    //             result[i] = [{
+    //                 ...currentArray[i],
+    //                 zIndex: sourceElement.zIndex
+    //             }]
+    //         }
+    //
+    //     }
+    //
+    // }
     return result
 }
 export const intersection: <T>(array1: T[], array2: T[]) => T[] = (array1, array2) => {

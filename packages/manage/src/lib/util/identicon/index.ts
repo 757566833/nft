@@ -1,4 +1,4 @@
-import {asyncCanvas2Base64} from 'src/lib/util/file';
+import {asyncCanvas2Base64} from '../file';
 
 /**
  * 头像生成器

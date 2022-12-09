@@ -33,8 +33,9 @@ pub fn batch_shuffle(array:String) -> String {
     let mut  _array: Vec<Vec<i32>> = serde_json::from_str(&*array).unwrap();
     let length = _array.len();
     let mut index = 0;
+    let mut rng = thread_rng();
     while index<length {
-        _array[index].shuffle(&mut thread_rng());
+        _array[index].shuffle(&mut rng);
         index+=1;
     }
     serde_json::to_string(&_array).unwrap()

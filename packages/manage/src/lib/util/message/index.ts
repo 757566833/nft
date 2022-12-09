@@ -1,6 +1,6 @@
-import createTextIcon, {IIconType} from 'src/lib/util/create-icon';
-import {insertCss} from 'src/lib/util/_util';
-import {EEnv, Env} from 'src/lib/util/env';
+import createTextIcon, {IIconType} from '../create-icon';
+import {insertCss} from '../_util';
+import {EEnv, Env} from '../env';
 
 const theme:{[key:string]:{[key:string]:string}} ={
   light: {

@@ -1,4 +1,4 @@
-import {useEffectOnce} from 'src/lib/react-hook/useEffectOnce';
+import {useEffectOnce} from '../useEffectOnce';
 
 export const useMount = (fn: () => void) => {
   useEffectOnce(() => {

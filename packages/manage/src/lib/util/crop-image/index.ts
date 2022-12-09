@@ -1,7 +1,7 @@
-import panel from 'src/lib/util/panel';
+import panel from '../panel';
 import Cropper from 'cropperjs';
-import {asyncFile2Base64} from 'src/lib/util/file';
-import {EEnv, Env} from 'src/lib/util/env';
+import {asyncFile2Base64} from '../file';
+import {EEnv, Env} from '../env';
 
 const CROPPER_CSS_ID = 'CROPPER_CSS_ID';
 const css = `

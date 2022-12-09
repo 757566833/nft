@@ -8,11 +8,11 @@ export const Count:React.FC = ()=>{
     const [count,setCount] = useLocalStorage<string>(PREVIEW_COUNT,"100")
     const handleChange = useCallback((e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)=>{
         const value  = Number.parseInt(e.target.value)
-        setCount(value>1024?"1024":value.toString())
+        setCount(value>999999999?"999999999":value.toString())
     },[setCount])
     return <Box>
         <Typography variant={'h4'} fontWeight={"bold"}>Count</Typography>
-        <Typography variant={'body2'}>Preview Count, max 1024</Typography>
+        <Typography variant={'body2'}>Preview Count, max 999999999</Typography>
         <TextField value={count} onChange={handleChange} type={"number"}/>
     </Box>
 }

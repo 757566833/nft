@@ -1,6 +1,6 @@
 
 import * as React from 'react';
-import {useTimeoutFn} from 'src/lib/react-hook/useTimeoutFn';
+import {useTimeoutFn} from '../useTimeoutFn';
 
 export type UseDebounceReturn = [() => boolean | null, () => void];
 

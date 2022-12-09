@@ -12,9 +12,11 @@ import {useWallet} from "@/context/wallet";
 import {IContract} from "@/services/contract";
 import {CURRENT_CONTRACT, PREVIEW_COUNT} from "@/constant";
 import {LocalStorage} from "@/lib/react-context";
+import {useMount, useUnmount} from "@/lib/react-hook";
 
 const {useLocalStorage} = LocalStorage
 const Manage: React.FC = () => {
+    const workerRef = useRef<Worker>()
     const [wallet] = useWallet()
     const {chainId} = wallet
     const [currentContract] = useLocalStorage<Record<number, IContract | null>>(CURRENT_CONTRACT, {})
@@ -30,24 +32,39 @@ const Manage: React.FC = () => {
     const [count] = useLocalStorage<string>(PREVIEW_COUNT,"100")
 
     const handlePreview = useCallback(()=>{
-        message.info("generating")
-        setTimeout(()=>{
-            const value = attributesRef.current?.getValue()
-
-            if(value){
-                for (const valueElement of value) {
-                    const length  = valueElement.traits?.map(item=>item.value).filter(item=>item).length
-                    if(length==0){
-                        message.error(`${valueElement.name} must has value`)
-                        return
-                    }
+        const value = attributesRef.current?.getValue()
+        if(value){
+            for (const valueElement of value) {
+                const length  = valueElement.traits?.map(item=>item.value).filter(item=>item).length
+                if(length==0){
+                    message.error(`${valueElement.name} must has value`)
+                    return
                 }
-                const list = func(value,Number.parseInt(count))
-                setPreview(list)
             }
-        },280)
+            message.info("generating")
+            // const start = new Date().getTime();
+            console.log(workerRef.current)
+            workerRef.current?.postMessage(JSON.stringify({
+                value,
+                count
+            }))
+            // const list = func(value,Number.parseInt(count))
+            // const end = new Date().getTime();
+            // console.log(end - start)
+            // setPreview(list)
+        }
 
-    },[count, setPreview])
+    },[count])
+    useMount(()=>{
+        workerRef.current = new Worker(new URL('@/worker/shuffle.ts', import.meta.url))
+        workerRef.current.onmessage = (event: MessageEvent<string>) =>{
+            const list = JSON.parse(event.data)
+            setPreview(list)
+        }
+    })
+    useUnmount(()=>{
+        workerRef.current?.terminate()
+    })
     return <TraitProvider>
         <AddTrait />
         <Box marginTop={2}>

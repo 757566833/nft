@@ -14,9 +14,9 @@
   "devDependencies": {
   },
   "scripts": {
-    "build:wasm": "wasm-pack build packages/rust  --out-dir ../../packages/pkg",
-    "build": "wasm-pack build packages/rust  --out-dir ../../packages/pkg &&yarn workspace web build ",
-    "dev": "wasm-pack build packages/rust  --out-dir ../../packages/pkg &&yarn workspace web dev "
+    "build:wasm": "wasm-pack build packages/wasm  --out-dir ../../packages/pkg",
+    "build": "wasm-pack build packages/wasm  --out-dir ../../packages/pkg &&yarn workspace manage build ",
+    "dev": "wasm-pack build packages/wasm  --out-dir ../../packages/pkg &&yarn workspace manage dev "
     },
   "pre-commit": [
 
