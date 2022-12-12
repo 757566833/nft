@@ -7,7 +7,7 @@ import type { Provider } from "@ethersproject/providers";
 import type {
   IERC721Metadata,
   IERC721MetadataInterface,
-} from "src/typechain-types/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata";
+} from "../../../../../../@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata";
 
 const _abi = [
   {

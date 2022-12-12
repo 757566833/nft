@@ -7,7 +7,7 @@ import type { Provider } from "@ethersproject/providers";
 import type {
   IERC721Receiver,
   IERC721ReceiverInterface,
-} from "src/typechain-types/@openzeppelin/contracts/token/ERC721/IERC721Receiver";
+} from "../../../../../@openzeppelin/contracts/token/ERC721/IERC721Receiver";
 
 const _abi = [
   {

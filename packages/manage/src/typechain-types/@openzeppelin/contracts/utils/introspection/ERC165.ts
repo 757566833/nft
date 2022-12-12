@@ -18,7 +18,7 @@ import type {
   TypedListener,
   OnEvent,
   PromiseOrValue,
-} from "src/typechain-types/common";
+} from "../../../../common";
 
 export interface ERC165Interface extends utils.Interface {
   functions: {

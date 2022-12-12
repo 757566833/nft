@@ -7,7 +7,7 @@ import type { Provider } from "@ethersproject/providers";
 import type {
   ERC1155URIStorage,
   ERC1155URIStorageInterface,
-} from "src/typechain-types/@openzeppelin/contracts/token/ERC1155/extensions/ERC1155URIStorage";
+} from "../../../../../../@openzeppelin/contracts/token/ERC1155/extensions/ERC1155URIStorage";
 
 const _abi = [
   {

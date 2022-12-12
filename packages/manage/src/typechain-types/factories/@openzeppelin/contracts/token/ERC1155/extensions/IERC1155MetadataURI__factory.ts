@@ -7,7 +7,7 @@ import type { Provider } from "@ethersproject/providers";
 import type {
   IERC1155MetadataURI,
   IERC1155MetadataURIInterface,
-} from "src/typechain-types/@openzeppelin/contracts/token/ERC1155/extensions/IERC1155MetadataURI";
+} from "../../../../../../@openzeppelin/contracts/token/ERC1155/extensions/IERC1155MetadataURI";
 
 const _abi = [
   {

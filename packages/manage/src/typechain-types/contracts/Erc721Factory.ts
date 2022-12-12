@@ -24,7 +24,7 @@ import type {
   TypedListener,
   OnEvent,
   PromiseOrValue,
-} from "src/typechain-types/common";
+} from "../common";
 
 export interface Erc721FactoryInterface extends utils.Interface {
   functions: {

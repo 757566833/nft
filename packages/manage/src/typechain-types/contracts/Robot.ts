@@ -26,13 +26,14 @@ import type {
   TypedListener,
   OnEvent,
   PromiseOrValue,
-} from "src/typechain-types/common";
+} from "../common";
 
 export interface RobotInterface extends utils.Interface {
   functions: {
-    "batchAll(address[],uint256[],string[],string[],address[],address[],uint256[],uint256[],string[],string[],uint256[])": FunctionFragment;
-    "batchLockt1155(address,address[],uint256[],string[],string[],uint256[])": FunctionFragment;
+    "batchAll(address[],uint256[],string[],string[],address[],address[],uint256[],uint256[],string[],string[],uint256[],uint256[],string[])": FunctionFragment;
+    "batchLock1155(address,address[],uint256[],string[],string[],uint256[],uint256[],string[])": FunctionFragment;
     "batchMint721(address,address[],string[],uint256[])": FunctionFragment;
+    "batchSell(address[],uint256[],uint256[])": FunctionFragment;
     "bytesToHex(bytes)": FunctionFragment;
     "cancelSell(address,uint256)": FunctionFragment;
     "sell(address,uint256,uint256)": FunctionFragment;
@@ -42,8 +43,9 @@ export interface RobotInterface extends utils.Interface {
   getFunction(
     nameOrSignatureOrTopic:
       | "batchAll"
-      | "batchLockt1155"
+      | "batchLock1155"
       | "batchMint721"
+      | "batchSell"
       | "bytesToHex"
       | "cancelSell"
       | "sell"
@@ -63,18 +65,22 @@ export interface RobotInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>[],
       PromiseOrValue<string>[],
       PromiseOrValue<string>[],
-      PromiseOrValue<BigNumberish>[]
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<string>[]
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "batchLockt1155",
+    functionFragment: "batchLock1155",
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<string>[],
       PromiseOrValue<BigNumberish>[],
       PromiseOrValue<string>[],
       PromiseOrValue<string>[],
-      PromiseOrValue<BigNumberish>[]
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<string>[]
     ]
   ): string;
   encodeFunctionData(
@@ -83,6 +89,14 @@ export interface RobotInterface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<string>[],
       PromiseOrValue<string>[],
+      PromiseOrValue<BigNumberish>[]
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "batchSell",
+    values: [
+      PromiseOrValue<string>[],
+      PromiseOrValue<BigNumberish>[],
       PromiseOrValue<BigNumberish>[]
     ]
   ): string;
@@ -106,13 +120,14 @@ export interface RobotInterface extends utils.Interface {
 
   decodeFunctionResult(functionFragment: "batchAll", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "batchLockt1155",
+    functionFragment: "batchLock1155",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "batchMint721",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "batchSell", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "bytesToHex", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "cancelSell", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sell", data: BytesLike): Result;
@@ -121,14 +136,14 @@ export interface RobotInterface extends utils.Interface {
   events: {
     "Buy(address,uint256,uint256,address,address,uint256,uint256)": EventFragment;
     "CancelSell721(address,uint256)": EventFragment;
-    "Lock1155(uint256)": EventFragment;
+    "Mint1155(uint256,uint256,address)": EventFragment;
     "Mint721(address,uint256,uint256,address,address)": EventFragment;
     "Sell721(address,uint256,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Buy"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "CancelSell721"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Lock1155"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Mint1155"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Mint721"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Sell721"): EventFragment;
 }
@@ -160,12 +175,17 @@ export type CancelSell721Event = TypedEvent<
 
 export type CancelSell721EventFilter = TypedEventFilter<CancelSell721Event>;
 
-export interface Lock1155EventObject {
+export interface Mint1155EventObject {
   tokenId: BigNumber;
+  amount: BigNumber;
+  owner: string;
 }
-export type Lock1155Event = TypedEvent<[BigNumber], Lock1155EventObject>;
+export type Mint1155Event = TypedEvent<
+  [BigNumber, BigNumber, string],
+  Mint1155EventObject
+>;
 
-export type Lock1155EventFilter = TypedEventFilter<Lock1155Event>;
+export type Mint1155EventFilter = TypedEventFilter<Mint1155Event>;
 
 export interface Mint721EventObject {
   c: string;
@@ -224,24 +244,28 @@ export interface Robot extends BaseContract {
       addresses: PromiseOrValue<string>[],
       types: PromiseOrValue<BigNumberish>[],
       orderIds: PromiseOrValue<string>[],
-      orderHashs: PromiseOrValue<string>[],
-      froms: PromiseOrValue<string>[],
+      ordersHash: PromiseOrValue<string>[],
+      fromAddresses: PromiseOrValue<string>[],
       tos: PromiseOrValue<string>[],
       tokenIds: PromiseOrValue<BigNumberish>[],
       amounts: PromiseOrValue<BigNumberish>[],
       tokenURIs: PromiseOrValue<string>[],
       names: PromiseOrValue<string>[],
       values: PromiseOrValue<BigNumberish>[],
+      supplies: PromiseOrValue<BigNumberish>[],
+      suppliesHash: PromiseOrValue<string>[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    batchLockt1155(
+    batchLock1155(
       erc1155: PromiseOrValue<string>,
       tos: PromiseOrValue<string>[],
       tokenIds: PromiseOrValue<BigNumberish>[],
       names: PromiseOrValue<string>[],
       tokenURIs: PromiseOrValue<string>[],
       amounts: PromiseOrValue<BigNumberish>[],
+      supplies: PromiseOrValue<BigNumberish>[],
+      suppliesHash: PromiseOrValue<string>[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -250,6 +274,13 @@ export interface Robot extends BaseContract {
       accounts: PromiseOrValue<string>[],
       tokenURIs: PromiseOrValue<string>[],
       collectionIds: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    batchSell(
+      c: PromiseOrValue<string>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      prices: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -278,24 +309,28 @@ export interface Robot extends BaseContract {
     addresses: PromiseOrValue<string>[],
     types: PromiseOrValue<BigNumberish>[],
     orderIds: PromiseOrValue<string>[],
-    orderHashs: PromiseOrValue<string>[],
-    froms: PromiseOrValue<string>[],
+    ordersHash: PromiseOrValue<string>[],
+    fromAddresses: PromiseOrValue<string>[],
     tos: PromiseOrValue<string>[],
     tokenIds: PromiseOrValue<BigNumberish>[],
     amounts: PromiseOrValue<BigNumberish>[],
     tokenURIs: PromiseOrValue<string>[],
     names: PromiseOrValue<string>[],
     values: PromiseOrValue<BigNumberish>[],
+    supplies: PromiseOrValue<BigNumberish>[],
+    suppliesHash: PromiseOrValue<string>[],
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  batchLockt1155(
+  batchLock1155(
     erc1155: PromiseOrValue<string>,
     tos: PromiseOrValue<string>[],
     tokenIds: PromiseOrValue<BigNumberish>[],
     names: PromiseOrValue<string>[],
     tokenURIs: PromiseOrValue<string>[],
     amounts: PromiseOrValue<BigNumberish>[],
+    supplies: PromiseOrValue<BigNumberish>[],
+    suppliesHash: PromiseOrValue<string>[],
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -304,6 +339,13 @@ export interface Robot extends BaseContract {
     accounts: PromiseOrValue<string>[],
     tokenURIs: PromiseOrValue<string>[],
     collectionIds: PromiseOrValue<BigNumberish>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  batchSell(
+    c: PromiseOrValue<string>[],
+    tokenIds: PromiseOrValue<BigNumberish>[],
+    prices: PromiseOrValue<BigNumberish>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -332,24 +374,28 @@ export interface Robot extends BaseContract {
       addresses: PromiseOrValue<string>[],
       types: PromiseOrValue<BigNumberish>[],
       orderIds: PromiseOrValue<string>[],
-      orderHashs: PromiseOrValue<string>[],
-      froms: PromiseOrValue<string>[],
+      ordersHash: PromiseOrValue<string>[],
+      fromAddresses: PromiseOrValue<string>[],
       tos: PromiseOrValue<string>[],
       tokenIds: PromiseOrValue<BigNumberish>[],
       amounts: PromiseOrValue<BigNumberish>[],
       tokenURIs: PromiseOrValue<string>[],
       names: PromiseOrValue<string>[],
       values: PromiseOrValue<BigNumberish>[],
+      supplies: PromiseOrValue<BigNumberish>[],
+      suppliesHash: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    batchLockt1155(
+    batchLock1155(
       erc1155: PromiseOrValue<string>,
       tos: PromiseOrValue<string>[],
       tokenIds: PromiseOrValue<BigNumberish>[],
       names: PromiseOrValue<string>[],
       tokenURIs: PromiseOrValue<string>[],
       amounts: PromiseOrValue<BigNumberish>[],
+      supplies: PromiseOrValue<BigNumberish>[],
+      suppliesHash: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -358,6 +404,13 @@ export interface Robot extends BaseContract {
       accounts: PromiseOrValue<string>[],
       tokenURIs: PromiseOrValue<string>[],
       collectionIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    batchSell(
+      c: PromiseOrValue<string>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      prices: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -403,20 +456,24 @@ export interface Robot extends BaseContract {
     ): BuyEventFilter;
 
     "CancelSell721(address,uint256)"(
-      c?: null,
+      c?: PromiseOrValue<string> | null,
       tokenId?: PromiseOrValue<BigNumberish> | null
     ): CancelSell721EventFilter;
     CancelSell721(
-      c?: null,
+      c?: PromiseOrValue<string> | null,
       tokenId?: PromiseOrValue<BigNumberish> | null
     ): CancelSell721EventFilter;
 
-    "Lock1155(uint256)"(
-      tokenId?: PromiseOrValue<BigNumberish> | null
-    ): Lock1155EventFilter;
-    Lock1155(
-      tokenId?: PromiseOrValue<BigNumberish> | null
-    ): Lock1155EventFilter;
+    "Mint1155(uint256,uint256,address)"(
+      tokenId?: PromiseOrValue<BigNumberish> | null,
+      amount?: PromiseOrValue<BigNumberish> | null,
+      owner?: PromiseOrValue<string> | null
+    ): Mint1155EventFilter;
+    Mint1155(
+      tokenId?: PromiseOrValue<BigNumberish> | null,
+      amount?: PromiseOrValue<BigNumberish> | null,
+      owner?: PromiseOrValue<string> | null
+    ): Mint1155EventFilter;
 
     "Mint721(address,uint256,uint256,address,address)"(
       c?: PromiseOrValue<string> | null,
@@ -434,12 +491,12 @@ export interface Robot extends BaseContract {
     ): Mint721EventFilter;
 
     "Sell721(address,uint256,uint256)"(
-      c?: null,
+      c?: PromiseOrValue<string> | null,
       tokenId?: PromiseOrValue<BigNumberish> | null,
       price?: PromiseOrValue<BigNumberish> | null
     ): Sell721EventFilter;
     Sell721(
-      c?: null,
+      c?: PromiseOrValue<string> | null,
       tokenId?: PromiseOrValue<BigNumberish> | null,
       price?: PromiseOrValue<BigNumberish> | null
     ): Sell721EventFilter;
@@ -450,24 +507,28 @@ export interface Robot extends BaseContract {
       addresses: PromiseOrValue<string>[],
       types: PromiseOrValue<BigNumberish>[],
       orderIds: PromiseOrValue<string>[],
-      orderHashs: PromiseOrValue<string>[],
-      froms: PromiseOrValue<string>[],
+      ordersHash: PromiseOrValue<string>[],
+      fromAddresses: PromiseOrValue<string>[],
       tos: PromiseOrValue<string>[],
       tokenIds: PromiseOrValue<BigNumberish>[],
       amounts: PromiseOrValue<BigNumberish>[],
       tokenURIs: PromiseOrValue<string>[],
       names: PromiseOrValue<string>[],
       values: PromiseOrValue<BigNumberish>[],
+      supplies: PromiseOrValue<BigNumberish>[],
+      suppliesHash: PromiseOrValue<string>[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    batchLockt1155(
+    batchLock1155(
       erc1155: PromiseOrValue<string>,
       tos: PromiseOrValue<string>[],
       tokenIds: PromiseOrValue<BigNumberish>[],
       names: PromiseOrValue<string>[],
       tokenURIs: PromiseOrValue<string>[],
       amounts: PromiseOrValue<BigNumberish>[],
+      supplies: PromiseOrValue<BigNumberish>[],
+      suppliesHash: PromiseOrValue<string>[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -476,6 +537,13 @@ export interface Robot extends BaseContract {
       accounts: PromiseOrValue<string>[],
       tokenURIs: PromiseOrValue<string>[],
       collectionIds: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    batchSell(
+      c: PromiseOrValue<string>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      prices: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -505,24 +573,28 @@ export interface Robot extends BaseContract {
       addresses: PromiseOrValue<string>[],
       types: PromiseOrValue<BigNumberish>[],
       orderIds: PromiseOrValue<string>[],
-      orderHashs: PromiseOrValue<string>[],
-      froms: PromiseOrValue<string>[],
+      ordersHash: PromiseOrValue<string>[],
+      fromAddresses: PromiseOrValue<string>[],
       tos: PromiseOrValue<string>[],
       tokenIds: PromiseOrValue<BigNumberish>[],
       amounts: PromiseOrValue<BigNumberish>[],
       tokenURIs: PromiseOrValue<string>[],
       names: PromiseOrValue<string>[],
       values: PromiseOrValue<BigNumberish>[],
+      supplies: PromiseOrValue<BigNumberish>[],
+      suppliesHash: PromiseOrValue<string>[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    batchLockt1155(
+    batchLock1155(
       erc1155: PromiseOrValue<string>,
       tos: PromiseOrValue<string>[],
       tokenIds: PromiseOrValue<BigNumberish>[],
       names: PromiseOrValue<string>[],
       tokenURIs: PromiseOrValue<string>[],
       amounts: PromiseOrValue<BigNumberish>[],
+      supplies: PromiseOrValue<BigNumberish>[],
+      suppliesHash: PromiseOrValue<string>[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -531,6 +603,13 @@ export interface Robot extends BaseContract {
       accounts: PromiseOrValue<string>[],
       tokenURIs: PromiseOrValue<string>[],
       collectionIds: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    batchSell(
+      c: PromiseOrValue<string>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      prices: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

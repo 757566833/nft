@@ -31,18 +31,20 @@ export const Container:React.FC = ()=>{
         add(data.name)
     },[add])
 
-    return <Box>
+    return <Stack spacing={1} direction={"column"}>
         <Typography variant={'h4'} fontWeight={"bold"}>Container</Typography>
         <Stack direction={"row"} spacing={1} alignItems={"center"}>
-            <Typography variant={'body2'}>create no address contract for generate nft </Typography>
+            <Typography variant={'body2'}>create no address or custom contract for generate nft </Typography>
         </Stack>
         <Stack spacing={1}>
-            <TextField label={"name"} {...register("name",{required:true})}/>
+            <TextField required={true} label={"name"} {...register("name",{required:true})}/>
         </Stack>
-
+        <Stack spacing={1}>
+            <TextField label={"address"} {...register("address",{required:false})}/>
+        </Stack>
         <Box marginTop={2}>
             <LoadingButton loading={loading} variant={"contained"} onClick={handleSubmit(handleCreate)}>create</LoadingButton>
         </Box>
-    </Box>
+    </Stack>
 }
 export default Container;

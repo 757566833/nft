@@ -21,7 +21,7 @@ import type {
   TypedListener,
   OnEvent,
   PromiseOrValue,
-} from "src/typechain-types/common";
+} from "../../../../common";
 
 export interface IERC721ReceiverInterface extends utils.Interface {
   functions: {

@@ -7,7 +7,7 @@ import type { Provider } from "@ethersproject/providers";
 import type {
   Ownable,
   OwnableInterface,
-} from "src/typechain-types/@openzeppelin/contracts/access/Ownable";
+} from "../../../../@openzeppelin/contracts/access/Ownable";
 
 const _abi = [
   {

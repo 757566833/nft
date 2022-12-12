@@ -7,7 +7,7 @@ import type { Provider } from "@ethersproject/providers";
 import type {
   IErc1155,
   IErc1155Interface,
-} from "src/typechain-types/contracts/interfaces/IErc1155";
+} from "../../../contracts/interfaces/IErc1155";
 
 const _abi = [
   {
