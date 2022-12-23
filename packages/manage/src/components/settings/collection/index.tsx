@@ -1,4 +1,4 @@
-import React, {HTMLAttributes, useCallback, useMemo} from "react";
+import React, {HTMLAttributes, useCallback, useEffect, useMemo} from "react";
 import {Autocomplete, Box, Typography, TextField, Paper, Stack, IconButton} from "@mui/material";
 import {LocalStorage} from "@/lib/react-context";
 import {CURRENT_COLLECTION, CURRENT_CONTRACT} from "@/constant";
@@ -6,6 +6,7 @@ import {AutocompleteRenderInputParams} from "@mui/material/Autocomplete/Autocomp
 import {Refresh} from "@mui/icons-material";
 import {useCollections} from "@/http/collection";
 import {ICollection} from "@/services/collection";
+import {useWallet} from "@/context/wallet";
 const {useLocalStorage} = LocalStorage
 
 
@@ -23,7 +24,9 @@ const CustomPaper = (props:HTMLAttributes<HTMLElement>) => {
 const  isOptionEqualToValue=(r:ICollection,v:ICollection)=>r.id==v.id
 const renderInput = (params:AutocompleteRenderInputParams) => <TextField {...params} label="contract" />
 export const General:React.FC = ()=>{
-    const {data, isValidating, mutate} = useCollections()
+    const [wallet] = useWallet();
+    const {address} = wallet;
+    const {data, isValidating, mutate} = useCollections({owner:address})
     const [currentCollection,setCurrentCollection] = useLocalStorage<ICollection|null>(CURRENT_COLLECTION,null)
     const options = useMemo(()=>{
         return data||[]
@@ -36,6 +39,9 @@ export const General:React.FC = ()=>{
     const handleRefresh = useCallback(()=>{
         mutate().then()
     },[mutate])
+    useEffect(()=>{
+        setCurrentCollection(null)
+    },[address])
     return <Box>
         <Typography variant={'h4'} fontWeight={"bold"}>Collection</Typography>
         <Stack marginTop={2} spacing={3} direction={"row"}  alignItems={"center"}>
