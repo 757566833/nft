@@ -41,7 +41,7 @@ export const General:React.FC = ()=>{
     },[mutate])
     useEffect(()=>{
         setCurrentCollection(null)
-    },[address])
+    },[address, setCurrentCollection])
     return <Box>
         <Typography variant={'h4'} fontWeight={"bold"}>Collection</Typography>
         <Stack marginTop={2} spacing={3} direction={"row"}  alignItems={"center"}>
