@@ -4,6 +4,7 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import ColorLensOutlinedIcon from "@mui/icons-material/ColorLensOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
+import CurrencyBitcoinOutlinedIcon from '@mui/icons-material/CurrencyBitcoinOutlined';
 import {Action} from "@/components/header/action";
 import {IContract} from "@/services/contract";
 import {CURRENT_COLLECTION, CURRENT_CONTRACT} from "@/constant";
@@ -41,6 +42,7 @@ const Header:React.FC<{value:string,onChange:(value: string)=>void}> = (props)=>
                 <Tab  iconPosition="start" label={<Stack direction={"row"} alignItems={"center"} spacing={1} ><SettingsOutlinedIcon/><Box>Settings</Box></Stack>} value={"settings"}/>
                 <Tab  iconPosition="start" label={<Stack direction={"row"} alignItems={"center"} spacing={1} ><ImageOutlinedIcon/><Box>Generate</Box></Stack>} value={"generate"}/>
                 <Tab  iconPosition="start" label={<Stack direction={"row"} alignItems={"center"} spacing={1} ><ImageOutlinedIcon/><Box>Market</Box></Stack>} value={"market"}/>
+                <Tab  iconPosition="start" label={<Stack direction={"row"} alignItems={"center"} spacing={1} ><CurrencyBitcoinOutlinedIcon/><Box>Chain</Box></Stack>} value={"chain"}/>
             </Tabs>
         </Box>
         <Box>

@@ -148,6 +148,11 @@ const ThemeProvider:React.FC<PropsWithChildren> = (props)=>{
                       defaultProps:{
                           color:(theme)=>theme.palette.text.primary
                       }
+                    },
+                    MuiTab:{
+                      defaultProps:{
+                          disableRipple:true
+                      }
                     }
                 }
             }),
