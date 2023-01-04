@@ -98,13 +98,13 @@ export const Upload: React.FC = () => {
                                     const contract = await GetErc721(contractAddress)
                                     if(contract){
 
-                                        const gas = await contract.estimateGas.mint(data.address,`ipfs://${metaDataRes.data}`)
+                                        const gas = await contract?.estimateGas.mint(data.address,`ipfs://${metaDataRes.data}`)
                                         const fee = await getFee({
                                             provider,
                                             gasLimit:gas,
                                             isEIP1559
                                         })
-                                        await contract.mint(data.address, `ipfs://${metaDataRes.data}`,fee);
+                                        await contract?.mint(data.address, `ipfs://${metaDataRes.data}`,fee);
                                         setProgress(100)
                                         setFinish(true)
                                     }

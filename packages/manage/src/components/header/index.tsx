@@ -42,7 +42,7 @@ const Header:React.FC<{value:string,onChange:(value: string)=>void}> = (props)=>
                 <Tab  iconPosition="start" label={<Stack direction={"row"} alignItems={"center"} spacing={1} ><SettingsOutlinedIcon/><Box>Settings</Box></Stack>} value={"settings"}/>
                 <Tab  iconPosition="start" label={<Stack direction={"row"} alignItems={"center"} spacing={1} ><ImageOutlinedIcon/><Box>Generate</Box></Stack>} value={"generate"}/>
                 <Tab  iconPosition="start" label={<Stack direction={"row"} alignItems={"center"} spacing={1} ><ImageOutlinedIcon/><Box>Market</Box></Stack>} value={"market"}/>
-                <Tab  iconPosition="start" label={<Stack direction={"row"} alignItems={"center"} spacing={1} ><CurrencyBitcoinOutlinedIcon/><Box>Chain</Box></Stack>} value={"chain"}/>
+                <Tab  iconPosition="start" label={<Stack direction={"row"} alignItems={"center"} spacing={1} ><CurrencyBitcoinOutlinedIcon/><Box>network</Box></Stack>} value={"network"}/>
             </Tabs>
         </Box>
         <Box>

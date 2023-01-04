@@ -12,7 +12,7 @@ import {message} from "@/lib/util";
 //     Current       string `json:"current"`
 //     Type          int    `json:"type"`
 // }
-export interface IChain {
+export interface INetwork {
     id:number,
     rpc:string,
     erc721Factory:string
@@ -23,11 +23,11 @@ export interface IChain {
     block:string
     type:number
 }
-export const getChainList=  ()=>{
-    return  `${server}/chain/list`
+export const getNetworkList=  ()=>{
+    return  `${server}/network/list`
 }
-export const createChain  = async (chain?:Omit<IChain, "id">)=>{
-    const url = `${server}/chain`
+export const createNetwork = async (chain?:Omit<INetwork, "id">)=>{
+    const url = `${server}/network`
     const res =  await fetch(url,{method:"post",body:JSON.stringify(chain)})
     if( res.status>=300){
         message.error('请求错误')

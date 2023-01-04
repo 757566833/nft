@@ -7,6 +7,7 @@ export interface ICollection {
     name:string,
     logo:string
     owner:string
+    networkId :number
 }
 
 export const getCollections=  (params?:Partial<ICollection>)=>{

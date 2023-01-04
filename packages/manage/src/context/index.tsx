@@ -4,6 +4,7 @@ import ModeProvider from "@/context/mode";
 import ThemeProvider from "@/context/theme";
 import PreviewProvider from "@/context/preview";
 import WalletProvider from "@/context/wallet";
+import ContractProvider from "@/context/contract";
 
 const {LocalStorageProvider} = LocalStorage
 
@@ -14,10 +15,11 @@ export const Context: React.FC<PropsWithChildren> = (props) => {
             <ThemeProvider>
                 <WalletProvider>
                     <PreviewProvider>
-                        {children}
+                        <ContractProvider>
+                            {children}
+                        </ContractProvider>
                     </PreviewProvider>
                 </WalletProvider>
-
             </ThemeProvider>
         </ModeProvider>
     </LocalStorageProvider>

@@ -1,19 +1,26 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {Box, Button, IconButton, Stack, TextField, Typography} from "@mui/material";
 import {DataGrid, GridColDef} from "@mui/x-data-grid";
 import {Refresh} from "@mui/icons-material";
-import {useChainList, useCreateChain} from "@/http/chain";
+import {useNetworkList, useCreateNetwork} from "@/http/network";
 import {Modal} from "@/lib/react-component";
 import {useForm} from "react-hook-form";
-import {IChain} from "@/services/chain";
+import {INetwork} from "@/services/network";
 import {ethers} from "ethers";
 import {message} from "@/lib/util";
+
 const columns: GridColDef[] = [
-    { field: 'id', headerName: 'id', width: 200 ,disableColumnMenu:true,sortable:false},
-    { field: 'name', headerName: 'name', width: 200 ,disableColumnMenu:true,sortable:false},
-    { field: 'icon', headerName: 'icon', width: 198 ,disableColumnMenu:true,sortable:false},
+    { field: 'id', headerName: 'id', width: 100 ,disableColumnMenu:true,sortable:false},
+
+    { field: 'rpc', headerName: 'rpc', width: 198 ,disableColumnMenu:true,sortable:false},
+    { field: 'chainId', headerName: 'chainId', width: 198 ,disableColumnMenu:true,sortable:false},
+    { field: 'block', headerName: 'start block', width: 200 ,disableColumnMenu:true,sortable:false},
+    { field: 'current', headerName: 'current', width: 198 ,disableColumnMenu:true,sortable:false},
+    { field: 'erc721Factory', headerName: 'erc721Factory', width: 198 ,disableColumnMenu:true,sortable:false},
+    { field: 'erc1155', headerName: 'erc1155', width: 198 ,disableColumnMenu:true,sortable:false},
+    { field: 'robot', headerName: 'robot', width: 198 ,disableColumnMenu:true,sortable:false},
 ];
-const createDefault:Omit<IChain, "id"|"chainId"|"type"|"block"> = {
+const createDefault:Omit<INetwork, "id"|"chainId"|"type"|"block"> = {
     rpc:'',
     erc721Factory:'',
     robot:'',
@@ -21,11 +28,11 @@ const createDefault:Omit<IChain, "id"|"chainId"|"type"|"block"> = {
     salt:'',
 }
 export const Eth:React.FC = ()=>{
-    const { register, handleSubmit ,formState:{errors},watch} = useForm<Omit<IChain, "id"|"chainId"|"type"|"current">>({defaultValues:createDefault,mode:"onBlur"});
+    const { register, handleSubmit ,formState:{errors},watch,reset} = useForm<Omit<INetwork, "id"|"chainId"|"type"|"current">>({defaultValues:createDefault,mode:"onBlur"});
     const [visible,setVisible] = useState(false);
-    const {data,mutate} = useChainList();
+    const {data,mutate} = useNetworkList();
     const [rpcHelpText,setRpcHelpText] = useState("rpc");
-    const [create] = useCreateChain();
+    const [create] = useCreateNetwork();
     const [createLoading,setCreateLoading] = useState(false)
     const rpc = watch("rpc")
     const validateRpc = useCallback(async (rpc:string)=>{
@@ -56,7 +63,7 @@ export const Eth:React.FC = ()=>{
         }
 
     },[rpc])
-    const handleCreate = useCallback(async (data:Omit<IChain, "id"|"chainId"|"type"|"block">)=>{
+    const handleCreate = useCallback(async (data:Omit<INetwork, "id"|"chainId"|"type"|"block">)=>{
         setCreateLoading(true)
         try {
 
@@ -75,13 +82,19 @@ export const Eth:React.FC = ()=>{
                 block:blockNumber.toString(),
                 type:1
             });
+            setVisible(false)
+            mutate().then()
         }catch (e:any) {
             message.error(e.message)
         }finally {
             setCreateLoading(false)
+
         }
 
-    },[create])
+    },[create, mutate])
+    useEffect(()=>{
+        reset()
+    },[reset, visible])
     return <Stack direction={'column'} spacing={2}>
         <Box>
             <Stack direction={"row"}>

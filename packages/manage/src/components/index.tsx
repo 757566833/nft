@@ -6,7 +6,7 @@ import Manage from "@/components/manage";
 import Settings from "@/components/settings";
 import Generate from "@/components/generate";
 import Market from "@/components/market";
-import Chain from "@/components/chain";
+import Network from "@/components/network";
 
 export const Index:React.FC = ()=>{
     const [active,setActive] = useState("manage");
@@ -27,8 +27,8 @@ export const Index:React.FC = ()=>{
         <Box hidden={active!='market'} flex={1}>
             <Market />
         </Box>
-        <Box hidden={active!='chain'} flex={1}>
-            <Chain />
+        <Box hidden={active!='network'} flex={1}>
+            <Network />
         </Box>
     </Box>
 }

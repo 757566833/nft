@@ -8,6 +8,7 @@ import {GetErc721Factory} from "@/contract";
 import {getFee} from "@/utils/fee";
 import {Modal} from "@/lib/react-component";
 import {LoadingButton} from "@mui/lab";
+import {useContract} from "@/context/contract";
 
 export interface ICreateContract {
     name:string,
@@ -22,12 +23,13 @@ export const General:React.FC = ()=>{
     const [wallet] = useWallet()
     const {chainId,isEIP1559} = wallet
     const [loading,setLoading] = useState(false)
+    const [contract] = useContract();
     const handleCreate = useCallback(async (data:ICreateContract)=>{
         const provider =  await Provider.getInstance();
         if(!provider||!chainId){
             return message.info("can't find metamask")
         }
-        const erc721Factory = await GetErc721Factory(chainId);
+        const erc721Factory = await GetErc721Factory(contract);
         if(erc721Factory){
             setLoading(true)
             const gas = await erc721Factory.estimateGas.createErc721(data.name,data.symbol)
@@ -45,7 +47,7 @@ export const General:React.FC = ()=>{
             }
 
         }
-    },[chainId, isEIP1559])
+    },[contract,chainId, isEIP1559])
     const [visible,setVisible] = useState(false)
     const handleOpen = useCallback(()=>{
         setVisible(true)

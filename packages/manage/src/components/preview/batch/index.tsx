@@ -23,8 +23,8 @@ import {getFee} from "@/utils/fee";
 import Provider from "@/instance/provider";
 import {LoadingButton} from "@mui/lab";
 import {ICollection} from "@/services/collection";
-import {ROBOT_CONTRACT_ADDRESS} from "@/constant/contract";
 import {Refresh} from "@mui/icons-material";
+import {useContract} from "@/context/contract";
 const {useLocalStorage} = LocalStorage
 
 interface AddressForm {
@@ -61,6 +61,7 @@ export const Batch: React.FC = () => {
     useEffect(()=>{
         setProgressTotal(preview.length*2+1)
     },[preview.length])
+    const [contract] = useContract();
     const handleStart = useCallback(async (data:AddressForm)=>{
 
         const contractAddress = current?.address
@@ -112,7 +113,7 @@ export const Batch: React.FC = () => {
                 addresses[i] = data.address;
                 collectionIds[i] = currentCollection.id.toString();
             }
-            const robot = await  GetRobot(chainId);
+            const robot = await  GetRobot(contract);
             if(robot){
 
                 try {
@@ -135,7 +136,7 @@ export const Batch: React.FC = () => {
 
             setLoading(false)
         }
-    },[chainId, current?.address, currentCollection?.id, currentCollection?.name, isEIP1559, preview, progressTotal])
+    },[chainId, contract, current?.address, currentCollection?.id, currentCollection?.name, isEIP1559, preview, progressTotal])
     const handleCancel = useCallback(()=>{
        setVisible(false)
     },[])
@@ -150,7 +151,7 @@ export const Batch: React.FC = () => {
 
     const getApprovedForAll = useCallback(async ()=>{
         if(current?.address&&chainId&&address){
-            const NEXT_PUBLIC_ROBOT = ROBOT_CONTRACT_ADDRESS[chainId]
+            const NEXT_PUBLIC_ROBOT = contract?.robot
             if(NEXT_PUBLIC_ROBOT){
                 const erc721 = await GetErc721(current?.address);
                 if(erc721){
@@ -169,11 +170,11 @@ export const Batch: React.FC = () => {
 
         }
 
-    },[address, chainId, current?.address])
+    },[address, chainId, contract?.robot, current?.address])
     const setApprovedForAll = useCallback(async ()=>{
         const provider = await Provider.getInstance()
         if(chainId&&provider&&current?.address){
-            const NEXT_PUBLIC_ROBOT = ROBOT_CONTRACT_ADDRESS[chainId]
+            const NEXT_PUBLIC_ROBOT = contract?.robot
             const erc721 = await GetErc721(current?.address);
             if(erc721){
                 try {
@@ -193,7 +194,7 @@ export const Batch: React.FC = () => {
             }
         }
 
-    },[chainId, current?.address, isEIP1559])
+    },[chainId, contract?.robot, current?.address, isEIP1559])
     useEffect(()=>{
         getApprovedForAll().then()
     },[getApprovedForAll, visible])
